@@ -12,7 +12,7 @@ import { createItem, updateItem, drawItem, itemHitbox, createSign, drawSign } fr
 import { createTileset } from '../art/tiles.js';
 import { buildParallax, drawParallax } from '../art/layers.js';
 import { drawHearts, drawBox, drawInventory } from '../ui/hud.js';
-import { getSprite } from '../art/sprites.js';
+import { getSprite, blit } from '../art/sprites.js';
 import { wrapText } from '../art/font.js';
 
 const PLATFORM_KIND = { C: 'camel', G: 'guffa', F: 'felucca' };
@@ -50,6 +50,22 @@ export function createLevel(game, def, opts = {}) {
     else if (s.ch === 'I' && opts.item) L.items.push(createItem(s.tx, s.ty, opts.item));
   }
   (def.gusts || []).forEach((z, i) => L.gusts.push(createGust(z, i * 97)));
+
+  // Fatimid gates: connected groups of D tiles. They open only for the Robe of Honor.
+  L.gates = [];
+  const seenD = new Set();
+  for (let y = 0; y < world.rows; y++) for (let x = 0; x < world.cols; x++) {
+    if (world.grid[y][x] !== 'D' || seenD.has(x + ',' + y)) continue;
+    const tiles = [], stack = [[x, y]];
+    while (stack.length) {
+      const [a, b] = stack.pop(), k = a + ',' + b;
+      if (seenD.has(k) || world.tileAt(a, b) !== 'D') continue;
+      seenD.add(k); tiles.push([a, b]);
+      stack.push([a + 1, b], [a - 1, b], [a, b + 1], [a, b - 1]);
+    }
+    const xs = tiles.map(t => t[0]), ys = tiles.map(t => t[1]);
+    L.gates.push({ tiles: tiles.sort((p, q) => p[1] - q[1]), x0: Math.min(...xs) * TS, x1: (Math.max(...xs) + 1) * TS, y0: Math.min(...ys) * TS, y1: (Math.max(...ys) + 1) * TS, open: false, t: 0, warned: -999 });
+  }
   followCamera(L.cam, player, true, true);
 
   L.burst = (x, y, colors, n = 10) => {
@@ -116,6 +132,40 @@ export function createLevel(game, def, opts = {}) {
       if (!h.dead && !player.frozen && overlap(player, h)) L.damage(h.x + h.w / 2);
     }
     if (L.hazards.some(h => h.dead)) L.hazards = L.hazards.filter(h => !h.dead);
+
+    for (const g of L.gates) {
+      const near = player.x + player.w > g.x0 - 28 && player.x < g.x1 + 28 && player.y + player.h > g.y0 && player.y < g.y1;
+      if (!g.open && near) {
+        if (flags.robe) { g.open = true; g.t = 0; L.say('The gatekeeper sees the Robe of Honor and opens the Fatimid gate.'); L.sfx('gate'); }
+        else if (L.t - g.warned > 240) { g.warned = L.t; L.say('The gate stays shut. Only guests wearing the caliph’s robe of honor may pass.'); L.sfx('deny'); }
+      }
+      if (g.open && g.t < g.tiles.length * 3) {
+        g.t++;
+        const n = Math.floor(g.t / 3);
+        for (let i = 0; i < n; i++) world.openGates.add(g.tiles[g.tiles.length - 1 - i].join(','));
+        if (g.t >= g.tiles.length * 3) g.tiles.forEach(t => world.openGates.add(t.join(',')));
+      }
+    }
+
+    // Crumbling stones: start shaking when stood on, fall away, come back later.
+    if (player.onGround && !player.standingOn) {
+      const ty = Math.floor((player.y + player.h + 1) / TS);
+      for (const tx of [Math.floor(player.x / TS), Math.floor((player.x + player.w - 0.01) / TS)]) {
+        const k = tx + ',' + ty;
+        if (world.tileAt(tx, ty) === '%' && !world.crumble.has(k)) { world.crumble.set(k, { state: 'shake', t: 0 }); L.sfx('crack'); }
+      }
+    }
+    for (const [k, c] of world.crumble) {
+      c.t++;
+      if (c.state === 'shake' && c.t >= 22) {
+        c.state = 'gone'; c.t = 0;
+        const [tx, ty] = k.split(',').map(Number);
+        L.burst(tx * TS + 8, ty * TS + 4, [tiles.theme.brick.fill, tiles.theme.brick.hi, tiles.theme.brick.mortar], 12);
+      } else if (c.state === 'gone' && c.t >= 200) {
+        const [tx, ty] = k.split(',').map(Number);
+        if (!overlap(player, { x: tx * TS, y: ty * TS - 2, w: TS, h: TS + 2 })) world.crumble.delete(k);
+      }
+    }
     for (const q of L.particles) { q.x += q.vx; q.y += q.vy; q.vy += 0.15; q.life--; }
     if (L.particles.length) L.particles = L.particles.filter(q => q.life > 0);
 
@@ -221,6 +271,10 @@ export function createLevel(game, def, opts = {}) {
     tiles.drawTiles(ctx, world, cx, cy, L.t);
     drawDecor(ctx, def.decor, cx, cy, L.t, true);
     for (const s of L.signs) drawSign(ctx, s, cx, cy);
+    if (def.gatekeepers) for (const g of L.gates) {
+      const gx = g.x0 - 18 - cx, gy = g.y1 - 16 - cy;
+      if (gx > -20 && gx < W + 20) blit(ctx, 'guardWhite', gx, gy, 1);
+    }
     for (const k of L.checkpoints) L.drawCheckpoint(ctx, k);
     for (const it of L.items) drawItem(ctx, it, cx, cy);
     for (const p of L.plats) drawPlatform(ctx, p, cx, cy);

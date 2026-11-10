@@ -68,6 +68,41 @@ const DECOR = {
       }
     }
   },
+  // Buttress strips on a fortress-like wall face (Great Mosque of Kairouan).
+  buttresses(R, d) {
+    const top = d.ty * TS, h = (d.tyBottom - d.ty + 1) * TS;
+    for (let x = d.tx0 * TS + 6; x < (d.tx1 + 1) * TS; x += 28) { R(x, top, 8, h, 'rgba(10,12,30,0.28)'); R(x, top, 1, h, 'rgba(255,255,255,0.08)'); }
+  },
+  // Rounded buttresses along an Aghlabid basin's rim.
+  basin(R, d) {
+    const y = d.ty * TS;
+    for (let x = d.tx0 * TS; x <= (d.tx1 + 1) * TS; x += 18) {
+      for (let dy = 0; dy < 8; dy++) { const hw = Math.round(Math.sqrt(16 - Math.min(16, (dy - 4) * (dy - 4))) + 1); R(x - hw, y + dy - 4, hw * 2, 1, '#59609a'); }
+    }
+    R(d.tx0 * TS - 8, y - 1, (d.tx1 - d.tx0 + 2) * TS + 16, 2, '#6a72aa');
+  },
+  // Inside of the minaret shaft: dark stone and narrow windows onto the night sky.
+  minaret(R, d) {
+    const x0 = (d.tx0 + 2) * TS, x1 = (d.tx1 - 1) * TS;
+    R(x0, 4 * TS, x1 - x0, 16 * TS, '#1d2040');
+    for (let y = 5 * TS; y < 19 * TS; y += 48) { R(x0 + 12, y, 3, 9, '#0a0f2e'); R(x1 - 15, y + 24, 3, 9, '#0a0f2e'); R(x0 + 12, y + 1, 1, 1, '#e8e2c8'); }
+    for (let y = 4 * TS; y < 20 * TS; y += 8) R(x0, y, x1 - x0, 1, 'rgba(255,255,255,0.03)');
+  },
+  // The minaret's stone faces, painted over its wall tiles: sandstone, three tiers, a small dome.
+  minaretFace(R, d) {
+    const L0 = d.tx0 * TS, R1 = (d.tx1 + 1) * TS, stone = '#a8946a', shade = '#8d7852', hi = '#beac80', win = '#221d3a';
+    R(L0, 4 * TS, 32, 14 * TS, stone); R(L0, 4 * TS, 2, 16 * TS, hi);                 // left wall (door below)
+    R(R1 - 32, 4 * TS, 32, 2 * TS, stone); R(R1 - 32, 8 * TS, 32, 12 * TS, stone);     // right wall (exit at rows 6–7)
+    R(R1 - 4, 4 * TS, 4, 16 * TS, shade);
+    R(L0, 3 * TS, R1 - L0, TS, hi);                                                    // first tier cap
+    for (let x = L0; x < R1 - 2; x += 6) R(x, 3 * TS - 4, 4, 4, hi);
+    R(L0 + 2 * TS, 1 * TS, R1 - L0 - 4 * TS, 2 * TS, '#b4a176');                       // second tier
+    for (let x = L0 + 2 * TS; x < R1 - 2 * TS - 2; x += 6) R(x, TS - 3, 4, 3, '#b4a176');
+    R(L0 + 4 * TS, 0, R1 - L0 - 8 * TS, TS, '#beac80');                                // third tier
+    for (let dy = 0; dy < 10; dy++) { const hw = Math.round(Math.sqrt(100 - dy * dy)); R((L0 + R1) / 2 - hw, -dy, hw * 2, 1, '#beac80'); }
+    for (let y = 5 * TS; y < 18 * TS; y += 40) { R(L0 + 14, y, 3, 8, win); R(R1 - 17, y + 20, 3, 8, win); }
+    R((L0 + R1) / 2 - 2, 1 * TS + 6, 4, 10, win);
+  },
   banner(R, d) {
     const x = d.tx * TS + 6, y = d.ty * TS;
     R(x, y, 1, 14, '#3a2a20'); R(x + 1, y, 8, 5, d.color); R(x + 1, y + 5, 5, 2, d.color);
