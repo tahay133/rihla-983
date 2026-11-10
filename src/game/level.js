@@ -6,6 +6,7 @@ import { buildWorld } from './world.js';
 import { createPlayer, updatePlayer, hurtPlayer, drawPlayer } from './player.js';
 import { createPlatform, updatePlatform, drawPlatform, carry, landOnPlatforms } from './platforms.js';
 import { createTileset } from '../art/tiles.js';
+import { buildParallax, drawParallax } from '../art/layers.js';
 import { drawHearts, drawBox } from '../ui/hud.js';
 
 const PLATFORM_KIND = { C: 'camel', G: 'guffa', F: 'felucca' };
@@ -111,7 +112,16 @@ export function createLevel(game, def, opts = {}) {
     if (col.toLowerCase() === '#ffffff' || col.toLowerCase() === '#141018') { ctx.fillStyle = col === '#ffffff' ? '#cfc8b8' : '#3a3240'; ctx.fillRect(x + 2, fy + 4, 8, 1); }
   };
 
+  L.setBackdrop = name => { L.parallax = name ? buildParallax(name) : null; };
+  L.setBackdrop(def.backdrop);
+
   L.drawBackground = (ctx) => {
+    if (L.parallax) {
+      const baseY = Math.max(0, world.pxH - H);
+      const groundRow = def.groundRow ?? world.rows - 2;
+      drawParallax(ctx, L.parallax, L.cam.x, L.cam.y, baseY, Math.min(0, groundRow * TS - baseY - 150));
+      return;
+    }
     ctx.fillStyle = (def.theme && def.theme.sky) || '#2a1f3d';
     ctx.fillRect(0, 0, W, H);
   };

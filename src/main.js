@@ -14,7 +14,9 @@ const ctx = screen.ctx;
 const game = { screen, input, debug: false, scene: null, debugLines: [] };
 
 // Engine test room (camera, collision, one-way ledges, camel platform, checkpoint).
-const testScene = createLevel(game, testRoom);
+const testScene = createLevel(game, { ...testRoom, backdrop: 'bukhara' });
+const CITIES = ['bukhara', 'baghdad', 'cairo', 'qayrawan', 'cordoba'];
+window.addEventListener('keydown', e => { const n = '12345'.indexOf(e.key); if (n >= 0) testScene.setBackdrop(CITIES[n]); });
 
 game.scene = testScene;
 
