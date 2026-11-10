@@ -96,6 +96,8 @@ export default {
     awning: ['#a33a2a', '#efe0c0'],
     water: { body: 'rgba(61,125,140,0.68)', surf: '#8cc7cf', deep: 'rgba(30,70,80,0.45)' },
   },
+  // TODO(history): these come from the handoff's landmark list without a linked source; add citations for
+  // the Round City's dates (762–66), the al-Karkh markets, the Buyids' 945 date and Samarra's minaret (851).
   signs: [
     'Market awnings are springy: land on one to bounce high. Hold ↓ to land softly.',
     'Melons roll from upset carts. Jump over them!',

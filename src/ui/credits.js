@@ -1,6 +1,6 @@
 // Credits: Met objects (with links), sources, and the artistic-license notes. DOM overlay
 // so links work and long text stays readable; ↑/↓ scroll, Enter/Esc go back.
-import { ARTISTIC_LICENSE, SOURCES } from '../data/credits.js';
+import { ARTISTIC_LICENSE, SOURCES, NOT_DRAWN } from '../data/credits.js';
 
 function el(tag, attrs = {}, ...kids) {
   const e = document.createElement(tag);
@@ -13,11 +13,13 @@ const a = (href, text) => el('a', { href, target: '_blank', rel: 'noopener' }, t
 export function createCreditsScene(game, { root, data, onBack }) {
   const panel = el('section', { class: 'credits', tabindex: '-1', role: 'dialog', 'aria-label': 'Credits' },
     el('h2', {}, 'Riḥla 983 · Credits'),
-    el('p', {}, 'A pixel-art platformer for MEIS-UA 640 / HIST-UA 542, Fall 2026. Pixel art, code and music are original.'),
+    el('p', {}, 'A pixel-art platformer for MEIS-UA 640 / HIST-UA 542, Fall 2026. The pixel art, code and music are original. Object facts are paraphrased from The Met\u2019s collection pages.'),
     el('h3', {}, 'The five objects (The Met)'),
     el('ul', {}, data.items.map(it => el('li', {}, a(it.url, it.title), ` · ${it.date} · ${it.place} · Accession ${it.accession}`))),
     el('h3', {}, 'Artistic license'),
     el('ul', {}, ARTISTIC_LICENSE.map(t => el('li', {}, t))),
+    el('h3', {}, 'Not drawn: the year is 983'),
+    el('ul', {}, NOT_DRAWN.map(t => el('li', {}, t))),
     el('h3', {}, 'Sources for landmarks and banners'),
     el('ul', {}, SOURCES.map(([t, u]) => el('li', {}, a(u, t)))),
     el('p', { class: 'credits-small' }, 'Banner colours: Abbasid black and Fatimid white are well attested; the Córdoba red follows Maribel Fierro, as cited in a MESA abstract on Fatimid colour symbolism. No Met photographs are used; the sprites are simplified homages.'),

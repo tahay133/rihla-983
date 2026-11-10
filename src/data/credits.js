@@ -21,3 +21,12 @@ export const SOURCES = [
   ['The Met: Tiraz', 'https://www.metmuseum.org/toah/hd/tira/hd_tira.htm'],
   ['Islamic flag (overview of banner colours)', 'https://en.wikipedia.org/wiki/Islamic_flag'],
 ];
+
+// Left out on purpose because they did not exist yet (or no longer stood) in 983.
+export const NOT_DRAWN = [
+  'Bukhara & Samarkand: no Registan, Gur-e Amir or Bibi-Khanym (Timurid, 14th–15th c.), and no turquoise or ribbed domes.',
+  'Baghdad: no intact Green Dome (it collapsed in 941), no Mustanṣiriyya madrasa (13th c.), no Ottoman domes or pencil minarets.',
+  'Cairo: no Mosque of al-Ḥākim (begun 990), no Bāb Zuwayla or other late-11th-century stone gates, no Citadel (12th c.), no Mamluk domes or minarets.',
+  'Qayrawan: no Ottoman pencil minarets and no later white-domed zawiyas.',
+  'Córdoba: no Alhambra (13th–15th c.), no cathedral inside the mosque (16th c.), and not al-Manṣūr’s extension (987, four years in the future).',
+];

@@ -159,7 +159,7 @@ export default {
     'The Great Mosque’s hall: a forest of red-and-white horseshoe arches.',
     'The mihrab of al-Ḥakam II’s extension (961–76).',
     'The Roman bridge over the Guadalquivir.',
-    'Madinat al-Zahra, the palace-city, on the slopes of the Sierra Morena. Climb the terraces.',
+    'Madinat al-Zahra’s terraces, on the slopes of the Sierra Morena. Climb!',
   ],
   // guards (W), left to right
   guards: [{ range: 64 }, { range: 64 }, { range: 56 }, { range: 48 }, { range: 40 }],

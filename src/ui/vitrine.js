@@ -28,7 +28,7 @@ export function createVitrineScene(game, { data, onCard, onDone }) {
       c.fillStyle = '#20202c'; c.fillRect(0, 0, 320, 180);
       for (let x = 0; x < 320; x += 40) { c.fillStyle = '#24242f'; c.fillRect(x, 0, 20, 180); }
       drawText(c, 'Journey complete', 160, 8, { align: 'center', scale: 2, color: '#e8c45a', shadow: '#5a3a12' });
-      drawText(c, 'Five objects from five cities, now at The Met', 160, 26, { align: 'center', color: '#cbbd98' });
+      drawText(c, 'One object for each stop, all in The Met’s collection', 160, 26, { align: 'center', color: '#cbbd98' });
       // the case
       const cx = 14, cy = 40, cw = 292, ch = 76;
       c.fillStyle = '#3a2a20'; c.fillRect(cx - 3, cy + ch, cw + 6, 8);

@@ -124,6 +124,7 @@ export default {
     ledge: { wood: '#7a5232', hi: '#a06c42', dark: '#3b2630' },
   },
   // signs, left to right
+  // TODO(history): the Arab-Ata date (977–78) comes from the handoff's landmark list, which gives no source; add a citation.
   signs: [
     '← → or A / D: walk.',
     'Z, Space or ↑: jump. Hold it to jump higher.',
@@ -132,7 +133,7 @@ export default {
     'Dust gusts push you back. Camels keep walking: ride one through.',
     'From a camel’s back you can reach the ledge above.',
     'A dry riverbed. Cross by camel, or by the ledges.',
-    'Samarkand ahead. Its Arab-Ata Mausoleum (977–78) is brand new.',
+    'Near Samarkand: the Arab-Ata Mausoleum (977\u201378), brand new in 983.',
   ],
   // moving platforms (C/G/F), left to right
   platforms: [{ range: 352 }, { range: 352 }],

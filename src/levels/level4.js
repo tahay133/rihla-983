@@ -181,6 +181,8 @@ export default {
     gold: '#e8c45a',
     gate: { wood: '#5a3e26', dark: '#2a1c10', stud: '#c9cdd3', frame: '#8d7852' },
   },
+  // TODO(history): the Aghlabid basins (9th c.) and al-Manṣūriyya (947, drawn on the horizon) come from the
+  // handoff's landmark list without a linked source; add citations.
   signs: [
     'Qayrawan by night. Gold letters mark the safe stones; the others crumble.',
     { flag: 'robe', yes: 'A Fatimid gate. Wear the Robe of Honor and the gatekeeper will let you pass.', no: 'A Fatimid gate. The gatekeeper lets through only those wearing the caliph’s robe of honor.' },
