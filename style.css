@@ -1,6 +1,10 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#000;overflow:hidden}
-body{color:#f3ead2;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+body{color:#f3ead2;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
 #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#screen{position:relative;flex:none}
 #game{display:block;image-rendering:crisp-edges;image-rendering:pixelated;background:#000}
+/* DOM overlay laid out in game pixels (320×180), scaled to match the canvas. */
+#ui{position:absolute;left:0;top:0;width:320px;height:180px;transform-origin:0 0;transform:scale(var(--k,1));pointer-events:none}
+#ui > *{pointer-events:auto}
 .noscript{position:fixed;inset:0;margin:auto;height:2em;text-align:center}
