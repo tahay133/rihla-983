@@ -46,6 +46,28 @@ const DECOR = {
     }
     R(x0 - 8, top - 4, x1 - x0 + 16, 2, trim);
   },
+  // Stepped merlons along the top edge of a wall (row ty is the wall's top row).
+  crenels(R, d) {
+    const col = d.color || '#e3c893', y = d.ty * TS;
+    for (let x = d.tx0 * TS; x < (d.tx1 + 1) * TS - 3; x += 6) { R(x, y - 4, 4, 4, col); R(x + 1, y - 6, 2, 2, col); }
+    R(d.tx0 * TS, y, (d.tx1 - d.tx0 + 1) * TS, 1, d.shade || 'rgba(0,0,0,0.12)');
+  },
+  // A row of arched niches on a wall face. style: 'pointed' (Cairo, Qayrawan) or 'horseshoe' (Córdoba).
+  arches(R, d) {
+    const step = d.step || 24, w = d.w || 8, h = d.h || 20, y = d.ty * TS + (d.dy || 0);
+    for (let x = d.tx0 * TS + 8; x + w < (d.tx1 + 1) * TS - 4; x += step) {
+      if (d.style === 'horseshoe') {
+        R(x - 2, y - 2, w + 4, h + 2, '#efe0c0');
+        for (let i = 0; i < w + 4; i += 2) R(x - 2 + i, y - 4, 2, 2, i % 4 ? '#a33a2a' : '#efe0c0');
+        R(x, y, w, h, d.dark || '#4d3529');
+        R(x - 1, y + 1, w + 2, 2, d.dark || '#4d3529');
+      } else {
+        R(x, y + 2, w, h - 2, d.dark || '#7a5934');
+        R(x + 1, y + 1, w - 2, 1, d.dark || '#7a5934'); R(x + 2, y, w - 4, 1, d.dark || '#7a5934');
+        if (d.trim) R(x - 1, y + h, w + 2, 1, d.trim);
+      }
+    }
+  },
   banner(R, d) {
     const x = d.tx * TS + 6, y = d.ty * TS;
     R(x, y, 1, 14, '#3a2a20'); R(x + 1, y, 8, 5, d.color); R(x + 1, y + 5, 5, 2, d.color);

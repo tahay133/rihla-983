@@ -5,7 +5,7 @@ import { createCamera, followCamera } from '../engine/camera.js';
 import { buildWorld } from './world.js';
 import { createPlayer, updatePlayer, hurtPlayer, drawPlayer } from './player.js';
 import { createPlatform, updatePlatform, drawPlatform, carry, landOnPlatforms } from './platforms.js';
-import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust, createCart, updateCart, updateMelon, drawMelon, drawCart } from './hazards.js';
+import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust, createCart, updateCart, updateMelon, drawMelon, drawCart, createGuard, updateGuard, drawGuard } from './hazards.js';
 import { drawDecor } from '../art/decor.js';
 import { drawText, measureText } from '../art/font.js';
 import { createItem, updateItem, drawItem, itemHitbox, createSign, drawSign } from './items.js';
@@ -45,7 +45,8 @@ export function createLevel(game, def, opts = {}) {
     else if (s.ch === 'K') L.checkpoints.push({ x: s.tx * TS + 4, y: (s.ty - 1) * TS, w: 8, h: 32, tx: s.tx, ty: s.ty, on: false, raise: 0 });
     else if (s.ch === 'S') L.hazards.push(createScorpion(s.tx, s.ty, (def.hazards || [])[hi++] || {}));
     else if (s.ch === 'M') L.hazards.push(createCart(s.tx, s.ty, (def.carts || [])[L.hazards.filter(h => h.kind === 'cart').length] || {}));
-    else if (s.ch === '?') L.signs.push(createSign(s.tx, s.ty, (def.signs || [])[si++]));
+    else if (s.ch === 'W') L.hazards.push(createGuard(s.tx, s.ty, { sprite: def.guardSprite, ...((def.guards || [])[L.hazards.filter(h => h.kind === 'guard').length] || {}) }));
+    else if (s.ch === '?') { const t = (def.signs || [])[si++]; L.signs.push(createSign(s.tx, s.ty, t && typeof t === 'object' ? (flags[t.flag] ? t.yes : t.no) : t)); }
     else if (s.ch === 'I' && opts.item) L.items.push(createItem(s.tx, s.ty, opts.item));
   }
   (def.gusts || []).forEach((z, i) => L.gusts.push(createGust(z, i * 97)));
@@ -109,6 +110,7 @@ export function createLevel(game, def, opts = {}) {
 
     for (const h of L.hazards) {
       if (h.kind === 'scorpion') updateScorpion(h, world);
+      else if (h.kind === 'guard') updateGuard(h, world);
       else if (h.kind === 'cart') { updateCart(h, L); continue; }
       else if (h.kind === 'melon') updateMelon(h, L);
       if (!h.dead && !player.frozen && overlap(player, h)) L.damage(h.x + h.w / 2);
@@ -224,6 +226,7 @@ export function createLevel(game, def, opts = {}) {
     for (const p of L.plats) drawPlatform(ctx, p, cx, cy);
     for (const h of L.hazards) {
       if (h.kind === 'scorpion') drawScorpion(ctx, h, cx, cy);
+      else if (h.kind === 'guard') drawGuard(ctx, h, cx, cy);
       else if (h.kind === 'cart') drawCart(ctx, h, cx, cy);
       else if (h.kind === 'melon') drawMelon(ctx, h, cx, cy);
     }

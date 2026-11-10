@@ -120,3 +120,27 @@ export function drawCart(ctx, c, camX, camY) {
   R(-2, 8, 4, 1, '#5c4026');
   R(3, 2, 5, 5, '#3f7a3a'); R(8, 1, 5, 6, '#3f7a3a'); R(5, 0, 4, 3, '#2a5a2a'); R(4, 3, 1, 1, '#7fb069'); R(9, 2, 1, 1, '#7fb069');
 }
+
+// ---- palace guards (Cairo, Qayrawan, Córdoba) ----
+// Patrol back and forth; touching one means knockback and a heart, never death.
+export function createGuard(tx, ty, opts = {}) {
+  const x = tx * TS + 4, y = (ty + 1) * TS - 14;
+  const range = opts.range ?? 56;
+  return { kind: 'guard', sprite: opts.sprite || 'guardWhite', x, y, w: 8, h: 14, dir: opts.dir || -1, speed: opts.speed || 0.45, x0: x - range, x1: x + range, t: (tx * 7) % 30 };
+}
+
+export function updateGuard(g, world) {
+  g.t++;
+  const nx = g.x + g.dir * g.speed;
+  const ax = Math.floor((g.dir > 0 ? nx + g.w + 1 : nx - 1) / TS);
+  const footTy = Math.floor((g.y + g.h + 2) / TS), bodyTy = Math.floor((g.y + 4) / TS);
+  const blocked = world.solidAt(ax, bodyTy) === 1 || !world.solidAt(ax, footTy);
+  if (blocked || nx < g.x0 || nx > g.x1) g.dir = -g.dir;
+  else g.x = nx;
+}
+
+export function drawGuard(ctx, g, camX, camY) {
+  const x = Math.round(g.x) - 2 - camX, y = Math.round(g.y) - 2 - camY;
+  if (x < -20 || x > 340) return;
+  blit(ctx, (g.t >> 4) % 2 ? g.sprite + 'Walk' : g.sprite, x, y, g.dir > 0 ? 1 : -1);
+}
