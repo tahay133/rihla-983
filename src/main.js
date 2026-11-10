@@ -4,8 +4,8 @@ import { startLoop } from './engine/loop.js';
 import { createInput } from './engine/input.js';
 import { drawDebug } from './engine/debug.js';
 import { drawText } from './art/font.js';
-import { blit, getSprite } from './art/sprites.js';
-import './art/backdrops.js';
+import { createPlayer, updatePlayer, hurtPlayer, drawPlayer } from './game/player.js';
+import { drawHearts } from './ui/hud.js';
 
 const screen = createScreen(document.getElementById('game'), document.getElementById('screen'));
 const input = createInput(window);
@@ -13,33 +13,32 @@ const ctx = screen.ctx;
 
 const game = { screen, input, debug: false, scene: null, debugLines: [] };
 
-// Sprite test scene: all 7 handoff sprites, pre-rendered and drawn crisp at integer scales.
-const ORIGINAL = ['traveller', 'travellerWalk', 'bowlSamanid', 'bowlCamels', 'tiraz', 'blueQuran', 'pyxis'];
+// Movement test: a flat 20×12-tile room. X simulates taking a hit.
+const flatWorld = {
+  cols: 20, rows: 12,
+  solidAt(tx, ty) { return tx < 0 || tx >= 20 || ty >= 10 ? 1 : 0; },
+  tileAt(tx, ty) { return this.solidAt(tx, ty) ? '#' : '.'; },
+  waterAt() { return false; },
+};
 const testScene = {
-  t: 0,
-  update() { this.t++; },
-  render(c) {
-    c.fillStyle = '#14121b'; c.fillRect(0, 0, W, H);
-    drawText(c, 'Riḥla 983 · sprite test', W / 2, 6, { align: 'center', color: '#e8c45a' });
-    // row 1: traveller, walk frame, animated + flipped, at ×4
-    const walk = (this.t >> 4) & 1 ? 'travellerWalk' : 'traveller';
-    [['traveller', 1], ['travellerWalk', 1], [walk, 1], [walk, -1]].forEach(([n, f], i) => {
-      const x = 28 + i * 70;
-      c.fillStyle = '#1f1c29'; c.fillRect(x - 4, 18, 56, 72);
-      blit(c, n, x + 4, 22, f, 4);
-      drawText(c, i < 2 ? n : i === 2 ? 'walk →' : '← flipped', x + 24, 92, { align: 'center', color: '#b3a991' });
-    });
-    // row 2: the five Met objects at ×3
-    ORIGINAL.slice(2).forEach((n, i) => {
-      const s = getSprite(n);
-      const x = 12 + i * 61;
-      c.fillStyle = '#20202c'; c.fillRect(x, 104, 56, 56);
-      c.fillStyle = '#c9962b'; c.fillRect(x, 104, 56, 1); c.fillRect(x, 159, 56, 1); c.fillRect(x, 104, 1, 56); c.fillRect(x + 55, 104, 1, 56);
-      blit(c, n, x + 28 - (s.w * 3) / 2, 132 - (s.h * 3) / 2, 1, 3);
-      drawText(c, n, x + 28, 164, { align: 'center', color: '#b3a991' });
-    });
+  p: createPlayer(40, 146),
+  update(g) {
+    if (g.input.pressed.action) hurtPlayer(this.p, this.p.x + this.p.w / 2 + this.p.facing * 4);
+    if (this.p.hearts === 0) this.p.hearts = this.p.maxHearts;
+    updatePlayer(this.p, g.input, flatWorld);
   },
-  debugLines() { return ['SPRITES ' + ORIGINAL.join(' ')]; },
+  render(c) {
+    c.fillStyle = '#2a1f3d'; c.fillRect(0, 0, W, H);
+    c.fillStyle = '#7a5232'; c.fillRect(0, 160, W, 20);
+    c.fillStyle = '#a06c42'; c.fillRect(0, 160, W, 1);
+    drawText(c, 'MOVEMENT TEST · ← → MOVE · Z/SPACE/↑ JUMP · X TAKE A HIT', W / 2, 20, { align: 'center', color: '#cbbd98' });
+    drawPlayer(c, this.p, 0, 0);
+    drawHearts(c, this.p);
+  },
+  debugLines() {
+    const p = this.p;
+    return [`P ${p.x.toFixed(1)},${p.y.toFixed(1)} V ${p.vx.toFixed(2)},${p.vy.toFixed(2)} ${p.onGround ? 'GROUND' : 'AIR'} COYOTE ${p.coyote} BUF ${p.jumpBuf}`];
+  },
 };
 
 game.scene = testScene;
@@ -57,4 +56,6 @@ function render() {
 }
 
 const stats = startLoop(update, render);
+// Dev hook: window.__rihla.step(n) runs n fixed updates synchronously (for tests).
+game.step = (n = 1) => { for (let i = 0; i < n; i++) update(); render(); };
 window.__rihla = game;

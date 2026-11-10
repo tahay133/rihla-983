@@ -300,6 +300,11 @@ for (const [suffix, key] of [['White', 'F'], ['Red', 'r']]) {
   SPRITES['guard' + suffix + 'Walk'] = SPRITES.guardWalk.map(row => row.split('Q').join(key));
 }
 
+// White hurt-flash silhouettes of the traveller.
+for (const n of ['traveller', 'travellerWalk']) {
+  SPRITES[n + 'Flash'] = SPRITES[n].map(row => row.replace(/[^.]/g, 'W'));
+}
+
 // Pre-render each sprite (via drawSprite) to an offscreen canvas once, plus a
 // horizontally flipped copy for facing left. Lazy, so importing needs no DOM.
 const spriteCache = new Map();
