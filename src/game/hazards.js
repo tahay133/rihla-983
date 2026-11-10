@@ -144,3 +144,35 @@ export function drawGuard(ctx, g, camX, camY) {
   if (x < -20 || x > 340) return;
   blit(ctx, (g.t >> 4) % 2 ? g.sprite + 'Walk' : g.sprite, x, y, g.dir > 0 ? 1 : -1);
 }
+
+// ---- chasers (Córdoba): Umayyad guards who recognise the Fatimid robe ----
+// Slightly slower than the traveller; they hop walls and gaps and never fall far behind.
+export function createChaser(x, y, sprite) {
+  return { kind: 'chaser', sprite: sprite || 'guardRed', x, y, w: 8, h: 14, vx: 0, vy: 0, onGround: false, dir: 1, t: 0 };
+}
+
+export function updateChaser(c, level) {
+  const p = level.player, world = level.world;
+  c.t++;
+  const dir = p.x > c.x ? 1 : -1;
+  c.dir = dir;
+  c.vx = Math.max(-1.3, Math.min(1.3, c.vx + dir * 0.08));
+  c.vy = Math.min(c.vy + 0.24, 4.2);
+  moveX(c, c.vx, world);
+  if (c.hitWall && c.onGround) { c.vy = -4.6; c.onGround = false; }
+  moveY(c, c.vy, world);
+  if (c.landed) { c.vy = 0; c.onGround = true; } else c.onGround = false;
+  if (c.onGround) {
+    const ahead = Math.floor((c.x + (dir > 0 ? c.w + 6 : -6)) / TS), foot = Math.floor((c.y + c.h + 2) / TS);
+    if (!world.solidAt(ahead, foot)) { c.vy = -4.6; c.onGround = false; }
+  }
+  if (c.x < p.x - 220) { c.x = p.x - 220; c.y = Math.min(c.y, p.y); }
+  if (c.y > world.pxH) { c.x = p.x - 200; c.y = p.y - 40; c.vy = 0; }
+}
+
+export function drawChaser(ctx, c, camX, camY) {
+  const x = Math.round(c.x) - 2 - camX, y = Math.round(c.y) - 2 - camY;
+  if (x < -20 || x > 340) return;
+  const run = c.onGround && (c.t >> 3) % 2;
+  blit(ctx, run || !c.onGround ? c.sprite + 'Walk' : c.sprite, x, y, c.dir);
+}

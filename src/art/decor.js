@@ -103,6 +103,62 @@ const DECOR = {
     for (let y = 5 * TS; y < 18 * TS; y += 40) { R(L0 + 14, y, 3, 8, win); R(R1 - 17, y + 20, 3, 8, win); }
     R((L0 + R1) / 2 - 2, 1 * TS + 6, 4, 10, win);
   },
+  cypress(R, d) {
+    const x = d.tx * TS + 8, by = (d.ty + 1) * TS, h = d.h || 44;
+    for (let i = 0; i < h; i++) { const w = Math.max(1, Math.round(Math.min(4, (h - i) / 5, 1 + i / 3))); R(x - w, by - i, w * 2, 1, i % 5 ? '#2f3d24' : '#3a4a2c'); }
+  },
+  // Inside the Great Mosque of Córdoba: columns and two tiers of red-and-white arches.
+  hall(R, d) {
+    const x0 = d.tx0 * TS, x1 = (d.tx1 + 1) * TS, top = d.ty * TS, bot = (d.tyBottom + 1) * TS;
+    R(x0, top, x1 - x0, bot - top, '#2e211c');
+    for (let x = x0 + 8; x < x1; x += 32) {
+      R(x, top + 30, 4, bot - top - 30, '#8b7a68'); R(x - 1, bot - 4, 6, 4, '#6e6052'); R(x - 1, top + 28, 6, 3, '#a8946a');
+      // lower horseshoe arch and upper arch between this column and the next
+      for (let i = 0; i < 28; i++) {
+        const a = (i / 27) * Math.PI, ax = x + 2 + 14 - Math.cos(a) * 14, ay = top + 30 - Math.sin(a) * 12;
+        R(Math.round(ax), Math.round(ay), 2, 2, Math.floor(i / 3) % 2 ? '#a33a2a' : '#efe0c0');
+        const by = top + 12 - Math.sin(a) * 8;
+        R(Math.round(ax), Math.round(by), 2, 2, Math.floor(i / 3) % 2 ? '#efe0c0' : '#a33a2a');
+      }
+      R(x, top + 12, 4, 18, '#8b7a68');
+    }
+  },
+  // The mihrab of al-Ḥakam II's extension: a gilded horseshoe niche.
+  mihrab(R, d) {
+    const cx = d.tx * TS + 8, base = (d.ty + 5) * TS, top = d.ty * TS;
+    R(cx - 14, top, 28, base - top, '#5a3a1a');
+    for (let dy = 0; dy <= 14; dy++) { const hw = Math.round(Math.sqrt(196 - dy * dy)); R(cx - hw, top + 18 - dy, hw * 2, 1, '#c9962b'); }
+    R(cx - 12, top + 18, 24, base - top - 18, '#c9962b');
+    for (let dy = 0; dy <= 9; dy++) { const hw = Math.round(Math.sqrt(81 - dy * dy)); R(cx - hw, top + 22 - dy, hw * 2, 1, '#2a3a5a'); }
+    R(cx - 8, top + 22, 16, base - top - 22, '#2a3a5a');
+    for (let y = top + 6; y < base; y += 5) for (let x = cx - 12; x < cx + 12; x += 5) R(x + ((y / 5) % 2 ? 2 : 0), y, 1, 1, '#e8c45a');
+    R(cx - 16, base - 2, 32, 2, '#8a6a40');
+  },
+  // Arches under the Roman bridge's deck, between its piers.
+  bridge(R, d) {
+    const deckBot = d.ty * TS, water = deckBot + 18;
+    const xs = [d.tx0 * TS, ...d.piers.map(p => p * TS), (d.tx1 + 1) * TS];
+    for (let i = 0; i < xs.length - 1; i++) {
+      const a = xs[i] + (i === 0 ? 0 : 32), b = xs[i + 1];
+      const span = b - a, cx = (a + b) / 2, r = span / 2;
+      for (let y = deckBot; y < water; y++) {
+        const dy = water - y, hw = dy < r ? Math.round(Math.sqrt(r * r - dy * dy)) : 0;
+        const ow = Math.round(Math.min(r, Math.max(0, r - hw)));
+        R(a, y, ow, 1, '#b8935e'); R(b - ow, y, ow, 1, '#b8935e');
+      }
+      R(a, deckBot, span, 2, '#a07c4c');
+    }
+  },
+  // Pavilion at the top of Madinat al-Zahra: horseshoe arcade under a low roof.
+  pavilion(R, d) {
+    const x0 = d.tx0 * TS, x1 = (d.tx1 + 1) * TS, base = (d.ty + 1) * TS, top = base - 56;
+    R(x0, top, x1 - x0, 6, '#a35a3a'); R(x0 - 4, top + 4, x1 - x0 + 8, 3, '#8a4a2e');
+    for (let x = x0 + 4; x < x1 - 8; x += 20) {
+      R(x, top + 8, 3, base - top - 8, '#efe0c0');
+      for (let i = 0; i < 18; i++) { const a = (i / 17) * Math.PI; R(Math.round(x + 10 - Math.cos(a) * 8), Math.round(top + 20 - Math.sin(a) * 8), 2, 2, Math.floor(i / 3) % 2 ? '#a33a2a' : '#efe0c0'); }
+    }
+    R(x1 - 4, top + 8, 3, base - top - 8, '#efe0c0');
+  },
   banner(R, d) {
     const x = d.tx * TS + 6, y = d.ty * TS;
     R(x, y, 1, 14, '#3a2a20'); R(x + 1, y, 8, 5, d.color); R(x + 1, y + 5, 5, 2, d.color);

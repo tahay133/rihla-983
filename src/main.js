@@ -9,9 +9,11 @@ import level1 from './levels/level1.js';
 import level2 from './levels/level2.js';
 import level3 from './levels/level3.js';
 import level4 from './levels/level4.js';
+import level5 from './levels/level5.js';
 import data from './data/gameData.js';
 import { loadSave, writeSave, collect, maxHeartsFor } from './game/save.js';
 import { openCard } from './ui/card.js';
+import { drawText } from './art/font.js';
 
 const screen = createScreen(document.getElementById('game'), document.getElementById('screen'));
 const input = createInput(window);
@@ -19,7 +21,7 @@ const ctx = screen.ctx;
 
 const game = { screen, input, debug: false, scene: null, debugLines: [] };
 
-const LEVELS = [level1, level2, level3, level4];
+const LEVELS = [level1, level2, level3, level4, level5];
 const ui = document.getElementById('ui');
 game.save = loadSave();
 const itemById = id => data.items.find(it => it.id === id);
@@ -63,9 +65,22 @@ function openMuseumCard(level, item, i) {
   };
 }
 
-// Until the route map exists: go straight on to the next level.
+// Until the route map exists: go straight on to the next level. The pyxis ends the journey.
 function afterCard(i) {
+  if (game.save.unlocks.complete && i === LEVELS.length - 1) { game.scene = endingScene(); return; }
   game.startLevel(LEVELS[i + 1] ? i + 1 : 0);
+}
+
+function endingScene() {
+  return {
+    t: 0,
+    update(g) { this.t++; if (this.t > 60 && g.input.pressed.confirm) game.startLevel(0); },
+    render(c) {
+      c.fillStyle = '#14121b'; c.fillRect(0, 0, 320, 180);
+      drawText(c, 'Journey complete', 160, 80, { align: 'center', scale: 2, color: '#e8c45a' });
+      drawText(c, 'Enter: travel again', 160, 104, { align: 'center', color: '#cbbd98' });
+    },
+  };
 }
 
 // Dev shortcuts while the F3 overlay is on: 1–5 jump to a level, T opens the engine test room.

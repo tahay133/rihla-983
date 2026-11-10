@@ -5,7 +5,7 @@ import { createCamera, followCamera } from '../engine/camera.js';
 import { buildWorld } from './world.js';
 import { createPlayer, updatePlayer, hurtPlayer, drawPlayer } from './player.js';
 import { createPlatform, updatePlatform, drawPlatform, carry, landOnPlatforms } from './platforms.js';
-import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust, createCart, updateCart, updateMelon, drawMelon, drawCart, createGuard, updateGuard, drawGuard } from './hazards.js';
+import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust, createCart, updateCart, updateMelon, drawMelon, drawCart, createGuard, updateGuard, drawGuard, createChaser, updateChaser, drawChaser } from './hazards.js';
 import { drawDecor } from '../art/decor.js';
 import { drawText, measureText } from '../art/font.js';
 import { createItem, updateItem, drawItem, itemHitbox, createSign, drawSign } from './items.js';
@@ -77,6 +77,7 @@ export function createLevel(game, def, opts = {}) {
 
   L.respawnPlayer = (full) => {
     Object.assign(player, L.respawn, { vx: 0, vy: 0, standingOn: null, knockT: 0, invuln: 60, frozen: false });
+    if (L.chase && def.chase && player.x < def.chase.start * TS) { L.chase = null; L.hazards = L.hazards.filter(h => h.kind !== 'chaser'); }
     if (full) player.hearts = player.maxHearts;
     followCamera(L.cam, player, true, true);
   };
@@ -127,6 +128,7 @@ export function createLevel(game, def, opts = {}) {
     for (const h of L.hazards) {
       if (h.kind === 'scorpion') updateScorpion(h, world);
       else if (h.kind === 'guard') updateGuard(h, world);
+      else if (h.kind === 'chaser') updateChaser(h, L);
       else if (h.kind === 'cart') { updateCart(h, L); continue; }
       else if (h.kind === 'melon') updateMelon(h, L);
       if (!h.dead && !player.frozen && overlap(player, h)) L.damage(h.x + h.w / 2);
@@ -177,6 +179,31 @@ export function createLevel(game, def, opts = {}) {
         L.say(def.checkpointText && def.checkpointText[k.tx] ? def.checkpointText[k.tx] : 'Checkpoint');
         L.sfx('checkpoint');
         if (opts.onCheckpoint) opts.onCheckpoint(L.respawn);
+      }
+    }
+
+    // Córdoba: guards recognise the Fatimid Robe of Honor and give chase.
+    if (def.chase && flags.robe) {
+      const ch = def.chase;
+      if (!L.chase && player.x > ch.start * TS && player.x < ch.end * TS) {
+        L.chase = { on: true };
+        for (let i = 0; i < (ch.count || 2); i++) L.hazards.push(createChaser(L.cam.x - 24 - i * 22, player.y, def.guardSprite));
+        L.say('Umayyad guards recognise the Fatimid robe of a rival caliph. Run!', 200);
+        L.sfx('alarm');
+      } else if (L.chase && L.chase.on && player.x > ch.end * TS) {
+        L.chase.on = false;
+        L.hazards.forEach(h => { if (h.kind === 'chaser') L.burst(h.x + 4, h.y + 6, ['#b3261e', '#f3ead2'], 6); });
+        L.hazards = L.hazards.filter(h => h.kind !== 'chaser');
+        L.say('The guards lose sight of you in the dark hall.');
+      }
+    }
+
+    // Dark halls: without Gold Light the traveller won't go in.
+    for (const [c0] of def.dark || []) {
+      const x0 = c0 * TS;
+      if (!flags.light && player.x + player.w > x0 && player.x < x0 + 12) {
+        player.x = x0 - player.w; player.vx = 0;
+        if (L.t - (L.darkWarned || -999) > 240) { L.darkWarned = L.t; L.say('Pitch dark inside. You would need a light to find your way.'); }
       }
     }
 
@@ -252,6 +279,43 @@ export function createLevel(game, def, opts = {}) {
     }
   };
 
+  // Darkness over dark-hall zones, drawn at half resolution so the light has chunky pixel rings.
+  const darkCv = document.createElement('canvas'); darkCv.width = W / 2; darkCv.height = H / 2;
+  const dk = darkCv.getContext('2d');
+  L.drawDark = (ctx) => {
+    if (!def.dark) return;
+    let any = false;
+    dk.clearRect(0, 0, W / 2, H / 2);
+    for (const [c0, c1] of def.dark) {
+      const x0 = c0 * TS - L.cam.x, x1 = (c1 + 1) * TS - L.cam.x;
+      if (x1 < 0 || x0 > W) continue;
+      any = true;
+      dk.fillStyle = 'rgba(4,3,8,0.97)';
+      dk.fillRect(Math.floor(x0 / 2), 0, Math.ceil((x1 - x0) / 2), H / 2);
+      // soften the doorway edges
+      dk.fillStyle = 'rgba(4,3,8,0.5)';
+      dk.fillRect(Math.floor(x0 / 2) - 6, 0, 6, H / 2); dk.fillRect(Math.ceil(x1 / 2), 0, 6, H / 2);
+    }
+    if (!any) return;
+    if (flags.light) {
+      const px = (player.x + player.w / 2 - L.cam.x) / 2, py = (player.y + 6 - L.cam.y) / 2;
+      const flick = Math.round(Math.sin(L.t / 9) * 0.8);
+      dk.globalCompositeOperation = 'destination-out';
+      [[36, 0.35], [30, 0.6], [24, 0.85], [18, 1]].forEach(([r, a]) => {
+        dk.fillStyle = `rgba(0,0,0,${a})`;
+        dk.beginPath(); dk.arc(Math.round(px), Math.round(py), r + flick, 0, Math.PI * 2); dk.fill();
+      });
+      dk.globalCompositeOperation = 'source-over';
+    }
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(darkCv, 0, 0, W, H);
+    if (flags.light) {
+      const px = Math.round(player.x + player.w / 2 - L.cam.x), py = Math.round(player.y + 6 - L.cam.y);
+      ctx.fillStyle = 'rgba(232,196,90,0.07)';
+      ctx.fillRect(px - 40, py - 30, 80, 60);
+    }
+  };
+
   L.drawIntro = (ctx) => {
     const k = L.intro.t, len = L.intro.len;
     const slide = Math.min(1, k / 20, (len - k) / 20);
@@ -281,6 +345,7 @@ export function createLevel(game, def, opts = {}) {
     for (const h of L.hazards) {
       if (h.kind === 'scorpion') drawScorpion(ctx, h, cx, cy);
       else if (h.kind === 'guard') drawGuard(ctx, h, cx, cy);
+      else if (h.kind === 'chaser') drawChaser(ctx, h, cx, cy);
       else if (h.kind === 'cart') drawCart(ctx, h, cx, cy);
       else if (h.kind === 'melon') drawMelon(ctx, h, cx, cy);
     }
@@ -299,6 +364,7 @@ export function createLevel(game, def, opts = {}) {
     }
     tiles.drawWater(ctx, world, cx, cy, L.t);
     for (const g of L.gusts) drawGust(ctx, g, cx, cy);
+    L.drawDark(ctx);
     drawHearts(ctx, player);
     if (opts.inventory) drawInventory(ctx, opts.inventory);
     if (L.signText) {
