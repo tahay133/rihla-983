@@ -1,6 +1,6 @@
 // Hazards: scorpions (patrol the sand) and dust gusts (zones that push the traveller back).
 // Touching a hazard costs one heart with knockback; nothing here can kill permanently.
-import { TS } from '../engine/physics.js';
+import { TS, moveX, moveY } from '../engine/physics.js';
 import { blit } from '../art/sprites.js';
 
 export function createScorpion(tx, ty, opts = {}) {
@@ -69,4 +69,54 @@ export function drawGust(ctx, g, camX, camY) {
     ctx.fillStyle = 'rgba(214,170,110,0.16)';
     ctx.fillRect(Math.max(0, g.x0 - camX), 0, Math.min(320, g.x1 - camX) - Math.max(0, g.x0 - camX), 180);
   }
+}
+
+// ---- melon carts (Baghdad) ----
+// An upset cart rolls a melon toward the traveller every `period` frames while on screen.
+
+export function createCart(tx, ty, opts = {}) {
+  return { kind: 'cart', x: tx * TS, y: (ty + 1) * TS - 14, w: 16, h: 14, t: opts.phase ?? 40, period: opts.period || 140, dir: opts.dir || -1, speed: opts.speed || 1.15, solid: false };
+}
+
+export function updateCart(c, level) {
+  c.t++;
+  const onScreen = c.x > level.cam.x - 40 && c.x < level.cam.x + 360;
+  if (onScreen && c.t % c.period === 0) {
+    level.hazards.push({ kind: 'melon', x: c.x + (c.dir < 0 ? -6 : 14), y: c.y + 2, w: 8, h: 8, vx: c.dir * c.speed, vy: -1, rot: 0, dead: false });
+    level.sfx('roll');
+  }
+}
+
+export function updateMelon(m, level) {
+  const world = level.world;
+  m.vy = Math.min(m.vy + 0.25, 4);
+  moveX(m, m.vx, world);
+  if (m.hitWall) { m.dead = true; level.burst(m.x + 4, m.y + 4, ['#3f7a3a', '#7fb069', '#d2453a', '#f6a393']); level.sfx('splat'); return; }
+  moveY(m, m.vy, world);
+  if (m.landed) m.vy = 0;
+  m.rot += m.vx * 0.18;
+  if (world.waterAt(m.x + 4, m.y + 6)) { m.dead = true; level.burst(m.x + 4, m.y + 2, ['#9fd0c8', '#f3ead2']); }
+  if (m.y > world.pxH || m.x < -20 || m.x > world.pxW + 20) m.dead = true;
+}
+
+export function drawMelon(ctx, m, camX, camY) {
+  const x = Math.round(m.x) - camX, y = Math.round(m.y) - camY;
+  if (x < -10 || x > 330) return;
+  const q = ((Math.floor(-m.rot / (Math.PI / 2)) % 4) + 4) % 4;
+  ctx.save();
+  ctx.translate(x + 4, y + 4);
+  ctx.rotate(q * Math.PI / 2);
+  blit(ctx, 'melon', -4, -4);
+  ctx.restore();
+}
+
+export function drawCart(ctx, c, camX, camY) {
+  const x = Math.round(c.x) - camX, y = Math.round(c.y) - camY;
+  if (x < -24 || x > 340) return;
+  const R = (a, b, w, h, col) => { ctx.fillStyle = col; ctx.fillRect(x + a, y + b, w, h); };
+  // tipped cart: sloping bed, one wheel, a heap of melons
+  R(1, 7, 15, 2, '#7a5232'); R(0, 6, 3, 2, '#7a5232'); R(2, 9, 12, 1, '#4a2e1a');
+  R(11, 9, 5, 5, '#4a2e1a'); R(12, 10, 3, 3, '#a06c42'); R(13, 11, 1, 1, '#4a2e1a');
+  R(-2, 8, 4, 1, '#5c4026');
+  R(3, 2, 5, 5, '#3f7a3a'); R(8, 1, 5, 6, '#3f7a3a'); R(5, 0, 4, 3, '#2a5a2a'); R(4, 3, 1, 1, '#7fb069'); R(9, 2, 1, 1, '#7fb069');
 }

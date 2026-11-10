@@ -6,6 +6,7 @@ import { drawDebug } from './engine/debug.js';
 import { createLevel } from './game/level.js';
 import testRoom from './levels/test.js';
 import level1 from './levels/level1.js';
+import level2 from './levels/level2.js';
 import data from './data/gameData.js';
 import { loadSave, writeSave, collect, maxHeartsFor } from './game/save.js';
 import { openCard } from './ui/card.js';
@@ -16,7 +17,7 @@ const ctx = screen.ctx;
 
 const game = { screen, input, debug: false, scene: null, debugLines: [] };
 
-const LEVELS = [level1];
+const LEVELS = [level1, level2];
 const ui = document.getElementById('ui');
 game.save = loadSave();
 const itemById = id => data.items.find(it => it.id === id);

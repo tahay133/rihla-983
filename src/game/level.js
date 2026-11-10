@@ -5,7 +5,9 @@ import { createCamera, followCamera } from '../engine/camera.js';
 import { buildWorld } from './world.js';
 import { createPlayer, updatePlayer, hurtPlayer, drawPlayer } from './player.js';
 import { createPlatform, updatePlatform, drawPlatform, carry, landOnPlatforms } from './platforms.js';
-import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust } from './hazards.js';
+import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, gustPush, drawGust, createCart, updateCart, updateMelon, drawMelon, drawCart } from './hazards.js';
+import { drawDecor } from '../art/decor.js';
+import { drawText, measureText } from '../art/font.js';
 import { createItem, updateItem, drawItem, itemHitbox, createSign, drawSign } from './items.js';
 import { createTileset } from '../art/tiles.js';
 import { buildParallax, drawParallax } from '../art/layers.js';
@@ -28,7 +30,7 @@ export function createLevel(game, def, opts = {}) {
   const player = createPlayer(0, 0, maxHearts);
   const L = {
     def, info, world, tiles, player, flags, t: 0,
-    plats: [], checkpoints: [], hazards: [], gusts: [], signs: [], items: [],
+    plats: [], checkpoints: [], hazards: [], gusts: [], signs: [], items: [], particles: [],
     respawn: spawnAt(start),
     cam: createCamera(world.pxW, world.pxH),
     toast: null, fade: null, signText: null, windX: 0, done: false,
@@ -42,11 +44,16 @@ export function createLevel(game, def, opts = {}) {
     if (PLATFORM_KIND[s.ch]) L.plats.push(createPlatform(PLATFORM_KIND[s.ch], s.tx, s.ty, (def.platforms || [])[pi++] || {}));
     else if (s.ch === 'K') L.checkpoints.push({ x: s.tx * TS + 4, y: (s.ty - 1) * TS, w: 8, h: 32, tx: s.tx, ty: s.ty, on: false, raise: 0 });
     else if (s.ch === 'S') L.hazards.push(createScorpion(s.tx, s.ty, (def.hazards || [])[hi++] || {}));
+    else if (s.ch === 'M') L.hazards.push(createCart(s.tx, s.ty, (def.carts || [])[L.hazards.filter(h => h.kind === 'cart').length] || {}));
     else if (s.ch === '?') L.signs.push(createSign(s.tx, s.ty, (def.signs || [])[si++]));
     else if (s.ch === 'I' && opts.item) L.items.push(createItem(s.tx, s.ty, opts.item));
   }
   (def.gusts || []).forEach((z, i) => L.gusts.push(createGust(z, i * 97)));
   followCamera(L.cam, player, true, true);
+
+  L.burst = (x, y, colors, n = 10) => {
+    for (let i = 0; i < n; i++) L.particles.push({ x, y, vx: (Math.random() - 0.5) * 2.4, vy: -Math.random() * 2.2, life: 18 + Math.floor(Math.random() * 12), c: colors[i % colors.length] });
+  };
 
   L.say = (text, frames = 150) => { L.toast = { lines: [].concat(text).flatMap(t => wrapText(t, 280)), t: frames }; };
   L.intro = info.name ? { t: 0, len: 240 } : null;
@@ -102,8 +109,13 @@ export function createLevel(game, def, opts = {}) {
 
     for (const h of L.hazards) {
       if (h.kind === 'scorpion') updateScorpion(h, world);
-      if (!player.frozen && overlap(player, h)) L.damage(h.x + h.w / 2);
+      else if (h.kind === 'cart') { updateCart(h, L); continue; }
+      else if (h.kind === 'melon') updateMelon(h, L);
+      if (!h.dead && !player.frozen && overlap(player, h)) L.damage(h.x + h.w / 2);
     }
+    if (L.hazards.some(h => h.dead)) L.hazards = L.hazards.filter(h => !h.dead);
+    for (const q of L.particles) { q.x += q.vx; q.y += q.vy; q.vy += 0.15; q.life--; }
+    if (L.particles.length) L.particles = L.particles.filter(q => q.life > 0);
 
     for (const k of L.checkpoints) {
       if (k.raise < 20 && k.on) k.raise++;
@@ -172,6 +184,22 @@ export function createLevel(game, def, opts = {}) {
     ctx.fillRect(0, 0, W, H);
   };
 
+  // Labels pinned to a landmark in the far layer (which repeats every 320 px at 0.2×).
+  L.drawFarLabels = (ctx) => {
+    for (const lb of def.farLabels || []) {
+      const o = Math.floor(L.cam.x * 0.2) % 320;
+      for (let k = -1; k <= 1; k++) {
+        const x = lb.x - o + k * 320;
+        if (x < 30 || x > 290) continue;
+        const w = measureText(lb.text) + 4;
+        const lx = Math.round(Math.max(2, Math.min(318 - w, x - w / 2)));
+        ctx.fillStyle = 'rgba(20,16,24,0.72)'; ctx.fillRect(lx, lb.y, w, 9);
+        ctx.fillStyle = 'rgba(243,234,210,0.6)'; ctx.fillRect(Math.round(x), lb.y - 3, 1, 3);
+        drawText(ctx, lb.text, lx + 2, lb.y + 2, { color: '#f3ead2' });
+      }
+    }
+  };
+
   L.drawIntro = (ctx) => {
     const k = L.intro.t, len = L.intro.len;
     const slide = Math.min(1, k / 20, (len - k) / 20);
@@ -186,12 +214,20 @@ export function createLevel(game, def, opts = {}) {
   L.render = (ctx) => {
     const cx = L.cam.x, cy = L.cam.y;
     L.drawBackground(ctx);
+    L.drawFarLabels(ctx);
+    drawDecor(ctx, def.decor, cx, cy, L.t);
     tiles.drawTiles(ctx, world, cx, cy, L.t);
+    drawDecor(ctx, def.decor, cx, cy, L.t, true);
     for (const s of L.signs) drawSign(ctx, s, cx, cy);
     for (const k of L.checkpoints) L.drawCheckpoint(ctx, k);
     for (const it of L.items) drawItem(ctx, it, cx, cy);
     for (const p of L.plats) drawPlatform(ctx, p, cx, cy);
-    for (const h of L.hazards) if (h.kind === 'scorpion') drawScorpion(ctx, h, cx, cy);
+    for (const h of L.hazards) {
+      if (h.kind === 'scorpion') drawScorpion(ctx, h, cx, cy);
+      else if (h.kind === 'cart') drawCart(ctx, h, cx, cy);
+      else if (h.kind === 'melon') drawMelon(ctx, h, cx, cy);
+    }
+    for (const q of L.particles) { ctx.fillStyle = q.c; ctx.fillRect(Math.round(q.x) - cx, Math.round(q.y) - cy, 1, 1); }
     drawPlayer(ctx, player, cx, cy);
     if (L.pickup) {
       const it = L.pickup.it, ox = it.x + it.w / 2 - cx, oy = it.y + it.h / 2 - cy;
