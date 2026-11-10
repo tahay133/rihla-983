@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riḥla 983 Handoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6efe0; --paper2:#efe4cc; --card:#fbf7ee; --ink:#1d1a22; --muted:#62594a;
+  --line:#dccfb2; --indigo:#1f2a6b; --gold:#a8791f; --red:#a33a2a;
+  --code-bg:#1b1d33; --code-ink:#ece4cf; --chip:#e7dcc2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#14121b; --paper2:#1c1926; --card:#1f1c29; --ink:#ece4d2; --muted:#b3a991;
+    --line:#383244; --indigo:#a8b6ff; --gold:#e3b75a; --red:#ea7a66;
+    --code-bg:#0d0e1a; --code-ink:#ece4cf; --chip:#2a2636;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14121b; --paper2:#1c1926; --card:#1f1c29; --ink:#ece4d2; --muted:#b3a991;
+  --line:#383244; --indigo:#a8b6ff; --gold:#e3b75a; --red:#ea7a66;
+  --code-bg:#0d0e1a; --code-ink:#ece4cf; --chip:#2a2636;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:0 16px 96px}
+h1,h2,h3,h4{font-family:Silkscreen,ui-monospace,monospace;font-weight:400;line-height:1.2;letter-spacing:.02em}
+h1{font-size:clamp(30px,6vw,52px);margin:0}
+h2{font-size:24px;margin:56px 0 14px;padding-top:12px;border-top:3px solid var(--ink)}
+h3{font-size:19px;margin:0 0 6px}
+h4{font-size:13px;margin:14px 0 6px;color:var(--gold);text-transform:uppercase}
+p{margin:0 0 12px}
+a{color:var(--indigo)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px}
+code{background:var(--chip);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);color:var(--code-ink);padding:16px;border-radius:6px;overflow:auto;line-height:1.5;margin:0}
+.px{image-rendering:crisp-edges;image-rendering:pixelated}
+header.hero{padding:40px 0 22px;border-bottom:3px solid var(--ink)}
+.kicker{font-family:Silkscreen,monospace;color:var(--red);font-size:13px;margin-bottom:8px}
+.lede{font-size:18px;max-width:760px;margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{background:var(--chip);border-radius:3px;padding:3px 9px;font-size:13px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;font-size:14px}
+nav.toc a{text-decoration:none;border-bottom:1px dotted var(--indigo)}
+.callout{border-left:4px solid var(--gold);background:var(--paper2);padding:12px 16px;border-radius:0 6px 6px 0;margin:14px 0}
+.callout.red{border-color:var(--red)}
+.copy-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+button{font:600 13px Inter,system-ui,sans-serif;background:var(--ink);color:var(--paper);border:0;border-radius:4px;padding:7px 12px;cursor:pointer}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--paper2);font-weight:600}
+tr:last-child td{border-bottom:0}
+.swatch{display:inline-block;width:14px;height:14px;border:1px solid var(--muted);vertical-align:-2px;border-radius:2px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}
+.sprite-tile{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.sprite-tile canvas{background:repeating-conic-gradient(var(--paper2) 0 25%,transparent 0 50%) 0 0/16px 16px;border-radius:4px}
+.sprite-tile .name{font-family:Silkscreen,monospace;font-size:13px}
+.sprite-tile .sub{font-size:12px;color:var(--muted)}
+.palette{display:flex;flex-wrap:wrap;gap:8px}
+.pal{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
+.pal i{display:inline-block;width:16px;height:16px;border-radius:2px;border:1px solid rgba(0,0,0,.25)}
+article.level{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 22px}
+.bd{position:relative;background:#000}
+.bd canvas{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.bd .tag{position:absolute;top:10px;left:10px;font-family:Silkscreen,monospace;font-size:13px;background:rgba(10,8,16,.78);color:#f3ead2;padding:3px 8px;border-radius:3px}
+.lv-body{padding:16px}
+.meta{color:var(--muted);font-size:14px;margin:0 0 6px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 24px}
+ul{margin:0 0 6px;padding-left:20px}
+li{margin:2px 0}
+.item-mini{display:flex;gap:14px;align-items:center;background:var(--paper2);border-radius:6px;padding:12px;margin-top:14px}
+.item-mini p{margin:0}
+.museum-card{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.museum-card canvas{background:#20202c;border:3px solid #c9962b;border-radius:4px;padding:6px}
+@media (max-width:560px){.museum-card{grid-template-columns:1fr}}
+.museum-card .t{font-family:Silkscreen,monospace;font-size:16px;line-height:1.3;margin-bottom:4px}
+.unlock{display:inline-block;margin-top:8px;font-size:13px;background:var(--indigo);color:var(--paper);padding:3px 8px;border-radius:3px}
+footer{margin-top:64px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Claude Code handoff · MEIS-UA 640 / HIST-UA 542 · Fall 2026</div>
+  <h1>Riḥla 983</h1>
+  <p class="lede">A pixel-art side-scrolling platformer. An Arab traveller crosses the Islamic world in <strong>983 CE</strong>, from Samanid Bukhara through Abbasid Baghdad, Fatimid Cairo and Qayrawan, to Umayyad Córdoba. Each level ends with a real object from the Metropolitan Museum of Art, shown in pixel form with a museum card. Along the way, the political map splits from one caliph into three.</p>
+  <div class="chips">
+    <span class="chip">Vanilla JS + Canvas 2D</span><span class="chip">320×180, integer-scaled</span>
+    <span class="chip">5 levels · 5 Met objects</span><span class="chip">GitHub Pages</span><span class="chip">16 commits</span>
+  </div>
+  <nav class="toc">
+    <a href="#kickoff">Kickoff prompt</a><a href="#progression">Progression</a><a href="#stack">Tech spec</a>
+    <a href="#art">Art direction</a><a href="#levels">Levels</a><a href="#items">Items &amp; cards</a>
+    <a href="#commits">Commit plan</a><a href="#repo">Repo layout</a><a href="#accept">Acceptance</a>
+    <a href="#accuracy">Accuracy guardrails</a><a href="#sources">Sources</a>
+  </nav>
+</header>
+
+<h2 id="kickoff">1 · Kickoff prompt for Claude Code</h2>
+<p>Paste this into a Claude Code session opened in an empty folder or a fresh GitHub repo, with this file attached or copied in.</p>
+<div class="copy-row"><span class="meta">Plain text</span><button id="copyBtn" type="button">Copy prompt</button></div>
+<pre id="kickoffText">You are building "Riḥla 983", a pixel-art side-scrolling platformer, from the handoff file rihla-983-handoff.html. Copy it to docs/handoff.html in the repo.
+
+1. Read the whole handoff first, including the &lt;script id="game-data"&gt; JSON and the &lt;script id="art-code"&gt; block.
+2. Stack: vanilla JavaScript ES modules + Canvas 2D. No frameworks, no bundler, no downloaded art. It must run from a static server and on GitHub Pages.
+3. Git: work on `main`. If there is no GitHub remote yet, ask me before creating one and ask whether it should be public. Follow the Commit Plan table in order, one commit per row, using the exact Conventional Commit message. Before every commit, serve the game locally (python3 -m http.server), open it, and fix all console errors. Push after every commit.
+4. Copy PALETTE, SPRITES, drawSprite and BACKDROPS from #art-code into src/art/ verbatim as the starting art. Extend them; don't replace them.
+5. Copy the #game-data JSON into src/data/gameData.js as an exported object (no fetch(), so it also works from file://).
+6. The game is set in 983 CE. Never draw anything listed under "Do not draw" in a level, or under Accuracy Guardrails.
+7. Museum cards: show `cardText` when it is non-empty, otherwise the `facts` bullets. Do not invent new historical claims. If a level needs one, leave a TODO comment for me.
+8. When done: tag v1.0.0, push, and report the GitHub Pages URL plus a one-line summary per commit.</pre>
+<div class="callout red"><strong>Course note.</strong> If any of this is submitted for MEIS-UA 640, the syllabus requires the writing to be in your own voice. The <code>cardText</code> fields are intentionally empty for you to write. The <code>facts</code> are research notes paraphrased from Met object pages, not finished captions.</div>
+
+<h2 id="progression">2 · Progression at a glance</h2>
+<p>Each item unlocks an ability that the <em>next</em> levels need, so the objects are part of how you play and not just collectibles. Banner colours make the politics readable at a glance: Abbasid black, then Fatimid white, then Córdoba red.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>City in 983</th><th>Who holds power</th><th>Banner</th><th>End item (Met)</th><th>Unlock</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Bukhara → Samarkand road</td><td>Samanid amirs, who recognise the Abbasid caliph</td><td><span class="swatch" style="background:#141018"></span> black</td><td>Samanid epigraphic bowl</td><td>Blessing: +1 max heart</td></tr>
+<tr><td>2</td><td>Baghdad</td><td>Abbasid caliph in name; Buyid amirs in control since 945</td><td><span class="swatch" style="background:#141018"></span> black</td><td>Luster bowl with four camels</td><td>Luster Glint: hidden shimmering platforms appear</td></tr>
+<tr><td>3</td><td>Cairo</td><td>Fatimid caliph al-ʿAzīz (r. 975–96)</td><td><span class="swatch" style="background:#ffffff"></span> white</td><td>Tiraz veil naming al-ʿAzīz</td><td>Robe of Honor: Fatimid gates open</td></tr>
+<tr><td>4</td><td>Qayrawan</td><td>Fatimid homeland, governed by the Zirids in the Fatimid caliph's name</td><td><span class="swatch" style="background:#ffffff"></span> white</td><td>Folio from the Blue Qur'an</td><td>Gold Light: lights dark halls</td></tr>
+<tr><td>5</td><td>Córdoba</td><td>Umayyad caliph Hishām II; al-Manṣūr holds real power</td><td><span class="swatch" style="background:#b3261e"></span> red*</td><td>Ivory pyxis from ʿAbd al-Raḥmān III's palace</td><td>Journey complete: the vitrine ending</td></tr>
+</tbody></table></div>
+<p class="meta">*Older sources give the Umayyads white. Recent scholarship (Maribel Fierro) links the Andalusi Umayyads with red. Red also keeps the three caliphates visually distinct, so the game uses it.</p>
+<div class="callout"><strong>Narrative twist for Level 5:</strong> the Robe of Honor, a Fatimid allegiance garment, works in Cairo and Qayrawan. In Umayyad Córdoba, guards recognise it as a rival caliph's cloth and give chase. The player <em>feels</em> the rivalry between the caliphates.</div>
+
+<h2 id="stack">3 · Tech spec</h2>
+<div class="grid g2">
+  <div class="card">
+    <h4>Rendering</h4>
+    <ul>
+      <li>Internal canvas <strong>320×180</strong>, scaled by the largest integer that fits the window and letterboxed.</li>
+      <li><code>ctx.imageSmoothingEnabled = false</code>, CSS <code>image-rendering: pixelated</code>, camera position rounded to whole pixels.</li>
+      <li>Sprites are pre-rendered from palette strings to offscreen canvases. Facing left uses a pre-flipped copy.</li>
+      <li>Three parallax layers per city: far (0.2×) is the handoff backdrop drawn at 160×90 and scaled ×2; mid is 0.5× and near is 0.8×, built from each level's landmark list.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Game loop &amp; physics</h4>
+    <ul>
+      <li>Fixed 60 Hz update with an accumulator; render on <code>requestAnimationFrame</code>.</li>
+      <li>16×16 tiles, AABB vs tilemap, one-way platforms, moving platforms carry the player.</li>
+      <li>Player: run accel/decel, variable-height jump, coyote time 6 frames, jump buffer 6 frames.</li>
+      <li>Damage = knockback + 1 heart, with checkpoints. Start with 3 hearts; nobody dies permanently.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Controls</h4>
+    <ul>
+      <li>Move: ←/→ or A/D · Jump: Z, Space, or ↑ · Action: X</li>
+      <li>Enter: confirm / close card · Esc: pause · M: mute · F3: debug</li>
+      <li>Gamepad API (standard mapping). Touch buttons are optional (commit 14 or later).</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>State machine</h4>
+    <ul>
+      <li>Title → Route Map → Level n → Museum Card → Route Map → … → Vitrine ending → Credits.</li>
+      <li>Save progress and unlocks in <code>localStorage</code>, wrapped in try/catch; the game must still run if storage is blocked. Include a "Reset journey" option.</li>
+      <li>Level data are string-row tilemaps (legend below) in <code>src/levels/</code>.</li>
+    </ul>
+  </div>
+</div>
+<h4>Tilemap legend (suggested)</h4>
+<pre>#  solid ground         =  one-way ledge          ~  water (slow, swimmable)
+L  luster platform (solid only after Glint)       D  Fatimid gate (opens with Robe)
+C  camel platform spawn  G  guffa boat spawn     F  felucca spawn
+S  scorpion   M  melon cart   W  guard patrol     K  checkpoint
+P  player start          I  end-of-level item     .  empty</pre>
+
+<h2 id="art">4 · Art direction</h2>
+<p>The look is chunky 16-bit, warm earth tones, and one strong landmark silhouette per city. A player should be able to name the city from a screenshot. The item sprites below are the canonical pixel versions of the five Met objects; their source code is in <code>#art-code</code>.</p>
+<h4>Shared item &amp; character palette</h4>
+<div class="palette" id="palette"></div>
+<h4>Sprites (shown ×6–×8)</h4>
+<div class="grid g3" id="sprites"></div>
+<div class="callout">Sizes: traveller 12×16; items 16×16 (pyxis 12×16, flat objects 16×12). In the world, items bob 1 px on a 40-frame cycle and sparkle. On the museum card they're drawn at ×8.</div>
+
+<h2 id="levels">5 · Levels</h2>
+<p>Each preview is the far-parallax layer, drawn by <code>BACKDROPS[name]</code> at 160×90 and shown here scaled up. "Background cues" must be readable in the finished level. "Do not draw" items are anachronisms for 983.</p>
+<div id="level-cards"></div>
+
+<h2 id="items">6 · Items &amp; museum cards</h2>
+<p>When the traveller touches the item: freeze the game, play a short chime, then slide in the museum card. The card shows the sprite ×8, title, date, place, Met accession, a link to the Met page, where to see it, three facts (or <code>cardText</code>), and the unlock. Enter closes it and returns to the route map.</p>
+<div class="grid" id="item-cards"></div>
+
+<h2 id="commits">7 · Commit plan</h2>
+<p>One Conventional Commit per row, pushed to GitHub after each. The game must load with zero console errors at every commit.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Commit message</th><th>What to build</th><th>Done when</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>chore: scaffold project</code></td><td>index.html, style.css, src/main.js, README stub, .gitignore; copy this file to docs/handoff.html</td><td>Page loads a black 320×180 canvas with "Riḥla 983" text</td></tr>
+<tr><td>2</td><td><code>feat(engine): pixel-perfect screen, fixed-timestep loop, input</code></td><td>Integer scaling + letterbox, 60 Hz loop, keyboard + gamepad, F3 debug overlay</td><td>Resizing never blurs; FPS and input states show in debug</td></tr>
+<tr><td>3</td><td><code>feat(art): palette and string-sprite renderer</code></td><td>Port #art-code into src/art/; offscreen pre-render; flipped copies</td><td>A sprite test scene shows all 7 sprites crisp</td></tr>
+<tr><td>4</td><td><code>feat(player): traveller movement</code></td><td>Run, variable jump, coyote time, jump buffer, 2-frame walk, hurt flash, hearts</td><td>Movement feels responsive on a flat test map</td></tr>
+<tr><td>5</td><td><code>feat(world): tilemap, collision, camera, checkpoints</code></td><td>Legend parser, AABB, one-way ledges, moving-platform carry, camera deadzone + clamp</td><td>No tunnelling at full speed; camera never shows past map edges</td></tr>
+<tr><td>6</td><td><code>feat(bg): parallax city backdrops</code></td><td>Far layer from BACKDROPS, plus mid/near layers per level landmark list; seamless tiling</td><td>Each city is recognisable in a screenshot (see Acceptance)</td></tr>
+<tr><td>7</td><td><code>feat(level-1): Bukhara and the Samarkand road</code></td><td>Tutorial signs, camel platforms, scorpions, dust gusts, item at the end</td><td>Playable start to finish in 2–4 min</td></tr>
+<tr><td>8</td><td><code>feat(items): artifact pickup and museum card</code></td><td>Pickup sparkle, freeze, card overlay, inventory, unlock flags</td><td>Card matches section 6; the unlock persists</td></tr>
+<tr><td>9</td><td><code>feat(level-2): Baghdad</code></td><td>Tigris guffa boats, market awnings (bounce), rolling melons, Round City gate checkpoint</td><td>Playable; the Samarra minaret has its "artistic license" label in the credits</td></tr>
+<tr><td>10</td><td><code>feat(level-3): Cairo</code></td><td>Nile feluccas, luster platforms needing Glint, palace guards, white banners</td><td>Can't finish without Glint; can finish with it</td></tr>
+<tr><td>11</td><td><code>feat(level-4): Qayrawan</code></td><td>Night palette, gold-letter safe path, Fatimid gates (Robe), minaret climb, basin swim</td><td>Gates open only with the Robe of Honor</td></tr>
+<tr><td>12</td><td><code>feat(level-5): Córdoba</code></td><td>Robe triggers a guard chase, dark hypostyle hall lit by Gold Light, Roman bridge, Madinat al-Zahra climb</td><td>Pyxis pickup triggers the ending</td></tr>
+<tr><td>13</td><td><code>feat(meta): title, route map, vitrine ending, save</code></td><td>Route map with banner colours; vitrine case of all 5 objects with captions; save/reset</td><td>Refreshing the page resumes at the right level</td></tr>
+<tr><td>14</td><td><code>feat(audio): chiptune and sfx</code></td><td>WebAudio synth: jump, pickup chime, card open; one loop per city; M mutes. Optional touch controls</td><td>Audio starts only after the first user input</td></tr>
+<tr><td>15</td><td><code>docs: readme, credits, sources, accuracy notes</code></td><td>README with how-to-play, credits screen, Met links, guardrails, artistic-license notes</td><td>Every item and landmark claim traces to a source</td></tr>
+<tr><td>16</td><td><code>ci: deploy to GitHub Pages</code></td><td><code>.github/workflows/pages.yml</code> using configure-pages, upload-pages-artifact, deploy-pages; Pages source = GitHub Actions</td><td>Live URL loads the game; tag v1.0.0</td></tr>
+</tbody></table></div>
+
+<h2 id="repo">8 · Repo layout</h2>
+<pre>rihla-983/
+├─ index.html
+├─ style.css
+├─ README.md
+├─ docs/handoff.html            ← this file
+├─ .github/workflows/pages.yml
+└─ src/
+   ├─ main.js                   boot + state machine
+   ├─ engine/  screen.js  loop.js  input.js  physics.js  camera.js  audio.js
+   ├─ art/     palette.js  sprites.js  backdrops.js     ← from #art-code
+   ├─ data/    gameData.js                              ← from #game-data
+   ├─ game/    player.js  platforms.js  hazards.js  items.js
+   ├─ levels/  level1.js … level5.js                    ← string-row tilemaps
+   └─ ui/      card.js  map.js  vitrine.js  hud.js  title.js</pre>
+
+<h2 id="accept">9 · Acceptance checklist</h2>
+<div class="grid g2">
+<div class="card"><ul>
+  <li>Loads on GitHub Pages with zero console errors; holds 60 fps on a mid-range laptop.</li>
+  <li>Pixels stay crisp at every window size; no sub-pixel jitter while scrolling.</li>
+  <li>All 5 levels can be completed in order. Each takes 2–4 minutes for a new player.</li>
+  <li>Each unlock is required in a later level and works as described.</li>
+</ul></div>
+<div class="card"><ul>
+  <li><strong>Screenshot test:</strong> someone who sees only the background can match it to its city using the cues listed.</li>
+  <li>Every museum card links to the correct Met page and is readable at 1× scale (min ~8 px font at 320×180).</li>
+  <li>Nothing from a "Do not draw" list appears anywhere.</li>
+  <li>Credits list the Met objects, sources, and the artistic-license notes.</li>
+</ul></div>
+</div>
+
+<h2 id="accuracy">10 · Accuracy guardrails</h2>
+<ul>
+  <li><strong>The year is 983.</strong> Anything built later is out: Timurid blue domes in Samarkand, Mamluk and Ottoman minarets, the Alhambra, the cathedral inside Córdoba's mosque, and al-Manṣūr's 987 extension.</li>
+  <li><strong>Baghdad's Green Dome</strong> over the caliph's palace collapsed in 941. Don't draw it intact.</li>
+  <li><strong>Spiral minarets:</strong> Samarra's spiral minaret (completed 851) is not in Baghdad. Show it only as a distant labelled silhouette (artistic license). Cairo's Ibn Ṭūlūn spiral is a rebuild of 1296, so leave it out of Cairo.</li>
+  <li><strong>Banners:</strong> Abbasid black and Fatimid white are well attested. The Córdoba red is a design choice backed by recent scholarship (see note in section 2).</li>
+  <li><strong>Objects:</strong> pixel sprites are simplified homages. Don't embed Met photographs; link to the object pages instead.</li>
+  <li><strong>Simplifications to disclose in credits:</strong> the Blue Qur'an sprite shows 5 gold lines (the real page has 15); the camel bowl sprite shows one camel (the real bowl has four).</li>
+  <li>Anything not in this file: leave a <code>// TODO(history):</code> comment. Don't invent.</li>
+</ul>
+
+<h2 id="sources">11 · Sources</h2>
+<ul>
+  <li>Met objects: <a href="https://www.metmuseum.org/toah/works-of-art/40.170.15">Samanid bowl 40.170.15</a> · <a href="https://www.metmuseum.org/art/collection/search/451768">Luster Bowl with Four Camels</a> · <a href="https://www.metmuseum.org/art/collection/search/452271">Tiraz Veil 1971.151</a> · <a href="https://www.metmuseum.org/art/collection/search/454662">Blue Qur'an folio 2004.88</a> · <a href="https://www.metmuseum.org/art/collection/search/471973">Pyxis 1970.324.5</a></li>
+  <li>Met essays: <a href="https://www.metmuseum.org/essays/the-art-of-the-fatimid-period-909-1171">Fatimid period</a> · <a href="https://www.metmuseum.org/essays/the-art-of-the-umayyad-period-in-spain-711-1031">Umayyad Spain</a> · <a href="https://www.metmuseum.org/toah/hd/tira/hd_tira.htm">Tiraz</a></li>
+  <li>Landmarks: <a href="https://smarthistory.org/samanid-mausoleum-bukhara-uzbekistan">Samanid Mausoleum (Smarthistory)</a> · <a href="https://en.wikipedia.org/wiki/Palace_of_the_Golden_Gate">Palace of the Golden Gate / Green Dome</a> · <a href="https://archnet.org/sites/1522">Ibn Ṭūlūn (Archnet)</a> · <a href="https://patrimoinedetunisie.com.tn/en/monuments/the-great-mosque-of-kairouan">Great Mosque of Kairouan</a> · <a href="https://archnet.org/sites/2715">Great Mosque of Córdoba (Archnet)</a> · <a href="https://www.artencordoba.com/en/mosque-cordoba/the-mosque/works-abd-al-rahman-iii/">ʿAbd al-Raḥmān III's minaret</a></li>
+  <li>Banner colours: <a href="https://en.wikipedia.org/wiki/Islamic_flag">Islamic flag (overview)</a>; Fierro on Umayyad red, cited in a MESA abstract on Fatimid colour symbolism.</li>
+</ul>
+
+<footer>Handoff prepared Nov 10, 2026. Pixel art in this file is original and free to reuse in the game. Met object data come from the Met's public collection pages.</footer>
+</div>
+
+<!-- ============================================================
+     GAME DATA. Copy into src/data/gameData.js as `export default {...}`
+     ============================================================ -->
+<script type="application/json" id="game-data">
+{
+  "title": "Riḥla 983",
+  "year": 983,
+  "internalResolution": [320, 180],
+  "tileSize": 16,
+  "startHearts": 3,
+  "levels": [
+    {
+      "id": "L1",
+      "name": "Bukhara & the Samarkand Road",
+      "region": "Transoxania (Mā warāʾ al-nahr)",
+      "power": "Samanid amirs, who recognise the Abbasid caliph",
+      "banner": "#141018",
+      "bannerNote": "Abbasid black (the Samanids acknowledge Baghdad)",
+      "backdrop": "bukhara",
+      "palette": ["#2a1f3d", "#7c4658", "#e5a15e", "#b27b46", "#7a5232", "#3b2630"],
+      "landmarks": [
+        "Samanid Mausoleum, Bukhara (late 9th–early 10th c.): baked-brick cube, basket-weave brickwork, a large dome and four small corner cupolas",
+        "Arab-Ata Mausoleum near Samarkand (dated 977–78): same Samanid brick style, brand new in 983",
+        "Mud-brick citadel walls and towers",
+        "Zarafshan mountains at dusk; Silk Road camel caravans"
+      ],
+      "avoid": [
+        "Registan, Gur-e Amir, Bibi-Khanym (Timurid, 14th–15th c.)",
+        "Turquoise-tiled or ribbed domes of any kind"
+      ],
+      "mechanics": [
+        "Tutorial: run, jump, drop through one-way ledges",
+        "Camel caravan as slow-moving platforms",
+        "Scorpions patrol the sand; dust gusts push the player back"
+      ],
+      "item": "bowl-samanid"
+    },
+    {
+      "id": "L2",
+      "name": "Baghdad, City of Peace",
+      "region": "Iraq",
+      "power": "Abbasid caliph in name; Buyid amirs control Baghdad since 945",
+      "banner": "#141018",
+      "bannerNote": "Abbasid black",
+      "backdrop": "baghdad",
+      "palette": ["#6aa3c2", "#e6e0bf", "#c9a46b", "#3d7d8c", "#a5874f", "#3f6b3a"],
+      "landmarks": [
+        "Round City walls, towers and gates (built 762–66)",
+        "The Tigris with round guffa boats; date palms on the banks",
+        "Markets of al-Karkh outside the Round City",
+        "Distant spiral minaret of Samarra (completed 851). It is well north of Baghdad: label it as artistic license"
+      ],
+      "avoid": [
+        "The Green Dome of the caliph's palace, intact (collapsed 941)",
+        "Mustanṣiriyya madrasa (13th c.), Ottoman domes and pencil minarets"
+      ],
+      "mechanics": [
+        "Guffa boats drift on the Tigris as moving platforms",
+        "Market awnings bounce the player higher",
+        "Rolling melons from upset carts; the Round City gate is the mid-level checkpoint"
+      ],
+      "item": "bowl-camels"
+    },
+    {
+      "id": "L3",
+      "name": "Cairo, the Victorious",
+      "region": "Egypt",
+      "power": "Fatimid caliph al-ʿAzīz (r. 975–96)",
+      "banner": "#ffffff",
+      "bannerNote": "Fatimid white, chosen against Abbasid black",
+      "backdrop": "cairo",
+      "palette": ["#e39a45", "#f7e4b3", "#d6b06a", "#3a7d84", "#c49d63", "#e3c893"],
+      "landmarks": [
+        "Al-Azhar mosque (founded with the city, 969–73): arcades and crenellations",
+        "Pyramids of Giza across the Nile",
+        "Nile feluccas with lateen sails",
+        "Mosque of Ibn Ṭūlūn (876–79), but without its spiral minaret (see guardrails)",
+        "White Fatimid banners on palace walls"
+      ],
+      "avoid": [
+        "Mosque of al-Ḥākim (begun 990)",
+        "Bāb Zuwayla and Badr al-Jamālī's stone gates (late 11th c.)",
+        "Saladin's Citadel (12th c.); Mamluk domes and minarets"
+      ],
+      "mechanics": [
+        "Feluccas ride the Nile current",
+        "Hidden luster platforms appear only with Luster Glint (from L2)",
+        "Palace guards patrol: touching one means knockback, not death"
+      ],
+      "item": "tiraz-veil"
+    },
+    {
+      "id": "L4",
+      "name": "Qayrawan by Night",
+      "region": "Ifrīqiya (Tunisia)",
+      "power": "Zirid governors ruling for the Fatimid caliph in Cairo",
+      "banner": "#ffffff",
+      "bannerNote": "Fatimid white",
+      "backdrop": "qayrawan",
+      "palette": ["#0a0f2e", "#1c2766", "#a8946a", "#8d7852", "#2a3a8a", "#e8c45a"],
+      "landmarks": [
+        "Great Mosque of Kairouan: fortress-like buttressed walls (final Aghlabid form, 836)",
+        "Its square, three-tier minaret, one of the oldest minarets still standing",
+        "Aghlabid basins: huge round 9th-century reservoirs",
+        "Al-Manṣūriyya, the Fatimids' round palace-city (founded 947), on the horizon"
+      ],
+      "avoid": [
+        "Ottoman pencil minarets",
+        "Later white-domed zawiyas (e.g. 19th c.)"
+      ],
+      "mechanics": [
+        "Night palette: gold letters on the ground mark the safe path",
+        "Fatimid gates open only with the Robe of Honor",
+        "Climb the three-tier minaret; swim slowly across the basin"
+      ],
+      "item": "blue-quran"
+    },
+    {
+      "id": "L5",
+      "name": "Córdoba, the Third Caliphate",
+      "region": "al-Andalus",
+      "power": "Umayyad caliph Hishām II; the chamberlain al-Manṣūr holds real power (978–1002)",
+      "banner": "#b3261e",
+      "bannerNote": "Umayyad red (see note in section 2)",
+      "backdrop": "cordoba",
+      "palette": ["#ee9f68", "#fae7c4", "#d9b47c", "#a33a2a", "#efe0c0", "#4c7f8e"],
+      "landmarks": [
+        "Great Mosque: horseshoe arches with red-brick and white-stone voussoirs, an Umayyad signature that echoes the Dome of the Rock",
+        "ʿAbd al-Raḥmān III's square minaret (951–52), crowned with gold and silver spheres",
+        "Al-Ḥakam II's extension and mihrab (961–76)",
+        "Roman bridge over the Guadalquivir",
+        "Madinat al-Zahra's terraces on the Sierra Morena slopes"
+      ],
+      "avoid": [
+        "The Alhambra (Nasrid Granada, 13th–15th c.)",
+        "The cathedral built inside the mosque (16th c.)",
+        "Al-Manṣūr's mosque extension (987, four years in the future)"
+      ],
+      "mechanics": [
+        "Umayyad guards recognise the Fatimid Robe: short chase sequence",
+        "Dark hypostyle 'forest' of red-white arches; Gold Light shows the way",
+        "Cross the Roman bridge, then climb Madinat al-Zahra's terraces to the pyxis"
+      ],
+      "item": "pyxis"
+    }
+  ],
+  "items": [
+    {
+      "id": "bowl-samanid",
+      "sprite": "bowlSamanid",
+      "title": "Bowl with Arabic Inscription, \"Blessing, Prosperity, Well-being, Happiness\"",
+      "date": "late 10th–11th century",
+      "place": "Probably Samarqand (Uzbekistan); excavated at Nishapur (Iran)",
+      "accession": "40.170.15",
+      "url": "https://www.metmuseum.org/toah/works-of-art/40.170.15",
+      "where": "The Met Fifth Avenue, Gallery 453 (check before visiting)",
+      "facts": [
+        "A Samanid 'epigraphic ware': Arabic calligraphy is the main decoration.",
+        "Found at Nishapur in 1939 by the Met's own excavation, but attributed to Samarkand. The bowl was a traveller too.",
+        "The Samanids ruled Transoxania from Bukhara while recognising the Abbasid caliph."
+      ],
+      "cardText": "",
+      "unlock": "Blessing: +1 maximum heart for the rest of the journey",
+      "spriteNote": "Black strokes on white slip stand in for the kufic band."
+    },
+    {
+      "id": "bowl-camels",
+      "sprite": "bowlCamels",
+      "title": "Luster Bowl with Four Camels",
+      "date": "10th century",
+      "place": "Attributed to Iraq",
+      "accession": "see Met page",
+      "url": "https://www.metmuseum.org/art/collection/search/451768",
+      "where": "The Met Fifth Avenue, Gallery 451",
+      "facts": [
+        "Luster, a metallic shimmer fired onto the glaze, was a 9th-century innovation of Iraq-based potters.",
+        "Abbasid luster bowls showed birds, mythical beasts, people and plants. This one shows four camels.",
+        "In 983 the caliph still lived in Baghdad, but the Buyid amirs held real power."
+      ],
+      "cardText": "",
+      "unlock": "Luster Glint: hidden shimmering platforms become solid and visible",
+      "spriteNote": "Simplified to one camel; the real bowl has four."
+    },
+    {
+      "id": "tiraz-veil",
+      "sprite": "tiraz",
+      "title": "Tiraz Veil",
+      "date": "dated 373 AH / 983–84 CE",
+      "place": "Egypt, state workshop at Tinnis (Nile Delta)",
+      "accession": "1971.151",
+      "url": "https://www.metmuseum.org/art/collection/search/452271",
+      "where": "Not on view (see the Met website)",
+      "facts": [
+        "A silk veil with two opposed, embroidered bands of kufic inscription.",
+        "It names the Fatimid caliph al-ʿAzīz, the workshop at Tinnis, and the year: the game's year, 983–84.",
+        "Inscribed cloth like this declared loyalty to the caliph and honored whoever received it."
+      ],
+      "cardText": "",
+      "unlock": "Robe of Honor: Fatimid gatekeepers let you pass (but not in Córdoba!)",
+      "spriteNote": "Two opposed brown bands with a small middle band of motifs."
+    },
+    {
+      "id": "blue-quran",
+      "sprite": "blueQuran",
+      "title": "Folio from the \"Blue Qur'an\"",
+      "date": "second half 9th–mid-10th century",
+      "place": "Tunisia, possibly Qairawan",
+      "accession": "2004.88",
+      "url": "https://www.metmuseum.org/art/collection/search/454662",
+      "where": "Not on view (see the Met website)",
+      "facts": [
+        "Gold kufic script and silver verse markers on parchment dyed with indigo.",
+        "From one of the most lavish Qur'an manuscripts ever made, with fifteen lines of gold per page.",
+        "Probably made in North Africa, where the Fatimids rose to power in 909."
+      ],
+      "cardText": "",
+      "unlock": "Gold Light: a glow that lights dark halls",
+      "spriteNote": "Five gold lines stand in for the page's fifteen; the silver dot is a verse marker."
+    },
+    {
+      "id": "pyxis",
+      "sprite": "pyxis",
+      "title": "Pyxis (ivory box)",
+      "date": "ca. 950–75",
+      "place": "Spain, Córdoba",
+      "accession": "1970.324.5",
+      "url": "https://www.metmuseum.org/art/collection/search/471973",
+      "where": "The Met Cloisters, Gallery 14",
+      "facts": [
+        "A carved ivory box, thought to be among the finest works of a master from ʿAbd al-Raḥmān III's palace.",
+        "ʿAbd al-Raḥmān III declared himself caliph in 929. By 983 there were three caliphs.",
+        "Córdoba's Umayyads rejected Abbasid authority but borrowed the palace arts of Baghdad and Samarra."
+      ],
+      "cardText": "",
+      "unlock": "Journey complete: open the vitrine",
+      "spriteNote": "Domed lid and carved openwork suggested with brown cut-outs."
+    }
+  ]
+}
+</script>
+
+<!-- ============================================================
+     ART CODE. Copy verbatim into src/art/ (palette.js, sprites.js, backdrops.js)
+     ============================================================ -->
+<script id="art-code">
+/* ---------- palette.js ---------- */
+const PALETTE = {
+  K: '#1b1a1f', // ink black (kufic strokes)
+  W: '#f3ead2', // white slip / silk
+  w: '#cbbd98', // cream shadow
+  G: '#c9962b', // luster gold
+  g: '#8f6420', // dark luster
+  Y: '#e8c45a', // gold leaf
+  B: '#1f2a6b', // indigo parchment
+  b: '#34449a', // indigo edge
+  S: '#b9c0c9', // silver
+  R: '#a33a2a', // brick red
+  n: '#6b4a2b', // brown: embroidery, wood, boots
+  I: '#efe3c3', // ivory
+  i: '#c8b48a', // ivory shadow
+  T: '#b07a52', // skin
+  U: '#f5f2ea', // turban
+  u: '#cfc8b8'  // turban shade
+};
+
+/* ---------- sprites.js ---------- */
+// '.' = transparent. Every row in a sprite has the same length.
+const SPRITES = {
+  traveller: [
+    '....UUUU....',
+    '...UUUUUU...',
+    '...uUUUUUu..',
+    '....TTTTT...',
+    '....TTTKT...',
+    '....nTTTT...',
+    '....nnnn....',
+    '...BBBBBB...',
+    '..BBBBBBBB..',
+    '..BYYYYYYB..',
+    '..BBBBBBBBTn',
+    '...BBBBBB..n',
+    '...BBBBBB..n',
+    '...BB..BB..n',
+    '...nn..nn..n',
+    '..nnn..nnn.n'
+  ],
+  travellerWalk: [
+    '....UUUU....',
+    '...UUUUUU...',
+    '...uUUUUUu..',
+    '....TTTTT...',
+    '....TTTKT...',
+    '....nTTTT...',
+    '....nnnn....',
+    '...BBBBBB...',
+    '..BBBBBBBB..',
+    '..BYYYYYYB..',
+    '..BBBBBBBBTn',
+    '...BBBBBB..n',
+    '...BBBBBB..n',
+    '..BB....BB.n',
+    '.nn......nnn',
+    'nnn......nnn'
+  ],
+  bowlSamanid: [
+    '.....wwwwww.....',
+    '...wwWWWWWWww...',
+    '..wWWKWKKWKWWw..',
+    '.wWKWKWWWWKWKWw.',
+    '.wWKWWWWWWWWKWw.',
+    'wWKKWWWWWWWWKKWw',
+    'wWWWWWWWWWWWWWWw',
+    'wWKWWWWKKWWWWKWw',
+    'wWKWWWWKKWWWWKWw',
+    'wWWWWWWWWWWWWWWw',
+    'wWKKWWWWWWWWKKWw',
+    '.wWKWWWWWWWWKWw.',
+    '.wWKWKWWWWKWKWw.',
+    '..wWWKWKKWKWWw..',
+    '...wwWWWWWWww...',
+    '.....wwwwww.....'
+  ],
+  bowlCamels: [
+    '.....gggggg.....',
+    '...ggGGGGGGgg...',
+    '..gGGWWWWWWGGg..',
+    '.gGGWWWWWWWWGGg.',
+    '.gGWWWWWWWWWWGg.',
+    'gGWWWWWWWWWGGWGg',
+    'gGWWWWGGWWWGWWGg',
+    'gGWWWGGGGWWGWWGg',
+    'gGWWGGGGGGGGWWGg',
+    'gGWWGGGGGGGWWWGg',
+    'gGWWGWGWWGWGWWGg',
+    '.gGWGWGWWGWGWGg.',
+    '.gGGWWWWWWWWGGg.',
+    '..gGGWWWWWWGGg..',
+    '...ggGGGGGGgg...',
+    '.....gggggg.....'
+  ],
+  tiraz: [
+    '.wwwwwwwwwwwwww.',
+    'wWWWWWWWWWWWWWWw',
+    'wWnWWnWnWWnWWnWw',
+    'wWnnnnnnnnnnnnWw',
+    'wWWWWWWWWWWWWWWw',
+    'wWWRWWWRWWWRWWWw',
+    'wWWWWWWWWWWWWWWw',
+    'wWnnnnnnnnnnnnWw',
+    'wWnWWnWnWWnWWnWw',
+    'wWWWWWWWWWWWWWWw',
+    'wwwwwwwwwwwwwwww',
+    'w.w.w.w.w.w.w.w.'
+  ],
+  blueQuran: [
+    'bbbbbbbbbbbbbbbb',
+    'bBBBBBBBBBBBBBBb',
+    'bBYYYBYYYYBYYYBb',
+    'bBBBBBBBBBBBBBBb',
+    'bBYYBYYYSBYYYYBb',
+    'bBBBBBBBBBBBBBBb',
+    'bBYYYYBYYBYYYBBb',
+    'bBBBBBBBBBBBBBBb',
+    'bBYYBYYYYBYYYYBb',
+    'bBBBBBBBBBBBBBBb',
+    'bBYYYBYYBYYYYYBb',
+    'bbbbbbbbbbbbbbbb'
+  ],
+  pyxis: [
+    '.....nn.....',
+    '.....ii.....',
+    '...iiIIii...',
+    '..iIIIIIIi..',
+    '.iIInIInIIi.',
+    '.iIIIIIIIIi.',
+    'innnnnnnnnni',
+    'iIInIIInIIIi',
+    'iInIIInIInIi',
+    'iIInnIInnIIi',
+    'iIIIInIIIIIi',
+    'iInIIInIInIi',
+    'iIInIIInIIIi',
+    'iIIIIIIIIIIi',
+    'innnnnnnnnni',
+    '.iiiiiiiiii.'
+  ]
+};
+
+function drawSprite(ctx, name, ox, oy) {
+  const rows = SPRITES[name];
+  for (let y = 0; y < rows.length; y++) {
+    const row = rows[y];
+    for (let x = 0; x < row.length; x++) {
+      const ch = row[x];
+      if (ch === '.') continue;
+      ctx.fillStyle = PALETTE[ch];
+      ctx.fillRect((ox || 0) + x, (oy || 0) + y, 1, 1);
+    }
+  }
+}
+
+/* ---------- backdrops.js ---------- */
+// Far-parallax layers, drawn at 160x90. In-game: draw to an offscreen 160x90 canvas, then scale x2.
+const BW = 160, BH = 90;
+function R(c, x, y, w, h, col) { c.fillStyle = col; c.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); }
+function bands(c, list) { for (let i = 0; i < list.length; i++) { const y = list[i][0]; const y2 = i + 1 < list.length ? list[i + 1][0] : BH; R(c, 0, y, BW, y2 - y, list[i][1]); } }
+function dome(c, cx, by, r, col) { for (let dy = 0; dy <= r; dy++) { const hw = Math.round(Math.sqrt(r * r - dy * dy)); R(c, cx - hw, by - dy - 1, hw * 2, 1, col); } }
+function disc(c, cx, cy, r, col) { for (let dy = -r; dy <= r; dy++) { const hw = Math.round(Math.sqrt(r * r - dy * dy)); R(c, cx - hw, cy + dy, hw * 2, 1, col); } }
+function rng(seed) { let s = seed % 2147483647; if (s <= 0) s += 2147483646; return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+function stars(c, n, maxY, col, seed) { const r = rng(seed); for (let i = 0; i < n; i++) R(c, Math.floor(r() * BW), Math.floor(r() * maxY), 1, 1, col); }
+function ridge(c, baseY, amp, col, seed, step) { const r = rng(seed); let h = amp * 0.5; for (let x = 0; x < BW; x += step) { h = Math.max(2, Math.min(amp, h + (r() - 0.5) * amp * 0.7)); R(c, x, baseY - h, step, h, col); } }
+function water(c, y, h, col, glint, seed) { R(c, 0, y, BW, h, col); const r = rng(seed); for (let i = 0; i < 22; i++) R(c, Math.floor(r() * (BW - 6)), y + 1 + Math.floor(r() * Math.max(1, h - 2)), 2 + Math.floor(r() * 5), 1, glint); }
+function palm(c, x, by, h, trunk, leaf) { R(c, x, by - h, 1, h, trunk); R(c, x - 3, by - h, 7, 1, leaf); R(c, x - 5, by - h + 1, 3, 1, leaf); R(c, x + 3, by - h + 1, 3, 1, leaf); R(c, x - 1, by - h - 1, 3, 1, leaf); R(c, x - 6, by - h + 2, 1, 1, leaf); R(c, x + 6, by - h + 2, 1, 1, leaf); }
+function crenel(c, x, y, w, col) { for (let i = 0; i < w - 1; i += 3) R(c, x + i, y - 2, 2, 2, col); }
+function banner(c, x, y, col) { R(c, x, y, 1, 9, '#3a2a20'); R(c, x + 1, y, 5, 3, col); R(c, x + 1, y + 3, 3, 1, col); }
+function camel(c, x, by, col) { R(c, x + 3, by - 7, 8, 3, col); R(c, x + 5, by - 9, 3, 2, col); R(c, x + 1, by - 8, 2, 3, col); R(c, x - 1, by - 9, 3, 2, col); R(c, x + 3, by - 4, 1, 4, col); R(c, x + 5, by - 4, 1, 4, col); R(c, x + 8, by - 4, 1, 4, col); R(c, x + 10, by - 4, 1, 4, col); R(c, x + 11, by - 7, 1, 2, col); }
+function pyramid(c, cx, by, h, lit, shade) { for (let i = 0; i < h; i++) { const hw = h - i; R(c, cx - hw, by - i - 1, hw, 1, lit); R(c, cx, by - i - 1, hw, 1, shade); } }
+
+const BACKDROPS = {
+  // L1 — Samanid Bukhara at dusk: mausoleum, citadel, caravan
+  bukhara(c) {
+    bands(c, [[0, '#2a1f3d'], [16, '#45304f'], [30, '#7c4658'], [44, '#bf6a4f'], [56, '#e5a15e']]);
+    stars(c, 16, 28, '#f3e6c8', 7);
+    ridge(c, 66, 24, '#5b3c50', 3, 4);
+    ridge(c, 70, 14, '#71485a', 11, 3);
+    R(c, 0, 74, BW, 16, '#7a5232'); R(c, 0, 74, BW, 1, '#a06c42');
+    // mud-brick citadel
+    R(c, 4, 52, 40, 22, '#93653f'); crenel(c, 4, 52, 40, '#93653f');
+    R(c, 6, 44, 9, 30, '#a3714a'); crenel(c, 6, 44, 9, '#a3714a');
+    R(c, 33, 46, 9, 28, '#a3714a'); crenel(c, 33, 46, 9, '#a3714a');
+    R(c, 21, 63, 7, 11, '#3a2618'); dome(c, 24.5, 63, 3, '#3a2618');
+    banner(c, 9, 33, '#141018');
+    // Samanid Mausoleum: brick cube, basket-weave, dome + corner cupolas
+    const mx = 67, mw = 26, top = 52;
+    R(c, mx, top, mw, 74 - top, '#b27b46');
+    for (let y = top + 1; y < 74; y += 2) { for (let x = mx + ((y >> 1) & 1); x < mx + mw; x += 2) R(c, x, y, 1, 1, '#8d5b33'); }
+    for (let x = mx + 2; x < mx + mw - 2; x += 3) R(c, x, top + 2, 2, 2, '#5e3a22');
+    R(c, mx + 10, top + 9, 6, 13, '#4a2c1c'); dome(c, mx + 13, top + 9, 3, '#4a2c1c');
+    R(c, mx - 1, top, 2, 74 - top, '#c48c54'); R(c, mx + mw - 1, top, 2, 74 - top, '#c48c54');
+    dome(c, mx + mw / 2, top, 11, '#a56d3e');
+    dome(c, mx, top, 2, '#a56d3e'); dome(c, mx + mw, top, 2, '#a56d3e');
+    // caravan
+    camel(c, 110, 74, '#3b2630'); camel(c, 124, 74, '#3b2630'); camel(c, 138, 74, '#3b2630');
+  },
+
+  // L2 — Baghdad: Round City wall & gate, Tigris, guffas, palms; distant Samarra minaret (artistic license)
+  baghdad(c) {
+    bands(c, [[0, '#6aa3c2'], [22, '#89bcd0'], [40, '#b9dcd8'], [52, '#e6e0bf']]);
+    disc(c, 26, 16, 5, '#fff3c8');
+    R(c, 0, 56, BW, 6, '#cdb98a');
+    const sx = 140, tiers = [16, 13, 10, 8, 6, 4];
+    let ty = 58;
+    tiers.forEach((w, i) => { ty -= 4; R(c, sx - w / 2, ty, w, 4, i % 2 ? '#a58d63' : '#b9a27a'); R(c, sx - w / 2 + ((i * 3) % w), ty, 2, 1, '#8a7350'); });
+    R(c, sx - 1, ty - 3, 2, 3, '#a58d63');
+    R(c, 6, 50, 104, 12, '#c9a46b'); crenel(c, 6, 50, 104, '#c9a46b');
+    for (let x = 10; x < 110; x += 12) { R(c, x - 3, 47, 6, 15, '#d4b27a'); dome(c, x, 47, 3, '#d4b27a'); }
+    R(c, 50, 42, 16, 20, '#d9b984'); crenel(c, 50, 42, 16, '#d9b984');
+    R(c, 54, 50, 8, 12, '#5a3f24'); dome(c, 58, 50, 4, '#5a3f24');
+    banner(c, 50, 30, '#141018'); banner(c, 64, 30, '#141018');
+    water(c, 62, 13, '#3d7d8c', '#8cc7cf', 5);
+    R(c, 30, 67, 10, 2, '#5a3a22'); R(c, 31, 69, 8, 1, '#4a2e1a'); R(c, 34, 63, 2, 4, '#2e2018');
+    R(c, 96, 71, 12, 2, '#5a3a22'); R(c, 97, 73, 10, 1, '#4a2e1a'); R(c, 101, 67, 2, 4, '#2e2018');
+    R(c, 0, 75, BW, 15, '#a5874f'); R(c, 0, 75, BW, 1, '#bfa060');
+    palm(c, 12, 78, 16, '#5c4026', '#3f6b3a'); palm(c, 124, 78, 18, '#5c4026', '#3f6b3a'); palm(c, 146, 79, 13, '#5c4026', '#4b7a44');
+    R(c, 64, 80, 14, 3, '#b3402c'); R(c, 64, 83, 1, 7, '#5c4026'); R(c, 77, 83, 1, 7, '#5c4026');
+    R(c, 84, 80, 14, 3, '#2f6f8a'); R(c, 84, 83, 1, 7, '#5c4026'); R(c, 97, 83, 1, 7, '#5c4026');
+  },
+
+  // L3 — Fatimid Cairo: pyramids across the Nile, felucca, al-Azhar arcade, white banners
+  cairo(c) {
+    bands(c, [[0, '#e39a45'], [18, '#ecb75e'], [36, '#f3d189'], [48, '#f7e4b3']]);
+    disc(c, 124, 20, 7, '#fff2cc');
+    R(c, 0, 50, BW, 6, '#d8b674');
+    pyramid(c, 22, 52, 14, '#d6b06a', '#b38a4d');
+    pyramid(c, 44, 52, 12, '#d6b06a', '#b38a4d');
+    pyramid(c, 60, 52, 6, '#d6b06a', '#b38a4d');
+    water(c, 56, 10, '#3a7d84', '#9fd0c8', 13);
+    const fx = 34, fy = 62;
+    R(c, fx, fy, 16, 2, '#4a2c1c'); R(c, fx + 2, fy + 2, 12, 1, '#3a2214');
+    R(c, fx + 8, fy - 14, 1, 14, '#4a2c1c');
+    for (let i = 0; i < 13; i++) R(c, fx + 8 - Math.floor(i * 0.55), fy - 14 + i, 1 + Math.floor(i * 0.7), 1, '#f6f0e2');
+    R(c, 0, 66, BW, 24, '#c49d63'); R(c, 0, 66, BW, 1, '#d8b47a');
+    [[4, 70, 14], [20, 68, 12], [34, 72, 16], [52, 69, 12], [66, 72, 12]].forEach(([x, y, w]) => {
+      R(c, x, y, w, BH - y, '#d7b47e'); R(c, x, y, w, 1, '#e6c895'); R(c, x + 3, y + 4, 2, 3, '#6a4a2a'); R(c, x + w - 5, y + 4, 2, 3, '#6a4a2a');
+    });
+    const ax = 84, aw = 70, at = 62;
+    R(c, ax, at, aw, BH - at, '#e3c893'); crenel(c, ax, at, aw, '#e3c893');
+    for (let x = ax + 4; x < ax + aw - 4; x += 8) { R(c, x, at + 8, 4, 10, '#7a5934'); R(c, x + 1, at + 7, 2, 1, '#7a5934'); }
+    dome(c, ax + aw / 2, at, 7, '#ecd6a6');
+    banner(c, ax + 2, at - 13, '#ffffff'); banner(c, ax + aw - 7, at - 13, '#ffffff');
+    palm(c, 78, 72, 14, '#5c4026', '#3f6b3a');
+  },
+
+  // L4 — Qayrawan at night: three-tier minaret, buttressed walls, Aghlabid basin, gold path
+  qayrawan(c) {
+    bands(c, [[0, '#0a0f2e'], [28, '#111946'], [48, '#1c2766'], [60, '#283777']]);
+    stars(c, 44, 46, '#e8e2c8', 21); stars(c, 12, 40, '#e8c45a', 33);
+    disc(c, 132, 15, 6, '#f2e6b8'); disc(c, 135, 13, 6, '#0a0f2e');
+    R(c, 0, 66, BW, 24, '#3b3652');
+    R(c, 52, 52, 100, 24, '#8d7852'); crenel(c, 52, 52, 100, '#8d7852');
+    for (let x = 56; x < 150; x += 10) R(c, x, 55, 3, 21, '#776443');
+    R(c, 96, 62, 8, 14, '#2a2440'); dome(c, 100, 62, 4, '#2a2440');
+    dome(c, 130, 52, 5, '#a08b62'); dome(c, 114, 52, 4, '#a08b62');
+    R(c, 30, 26, 22, 50, '#a8946a'); crenel(c, 30, 26, 22, '#a8946a');
+    R(c, 34, 16, 14, 10, '#b4a176'); crenel(c, 34, 16, 14, '#b4a176');
+    R(c, 37, 9, 8, 7, '#beac80'); dome(c, 41, 9, 4, '#beac80');
+    R(c, 40, 33, 2, 5, '#221d3a'); R(c, 40, 44, 2, 5, '#221d3a'); R(c, 40, 55, 2, 5, '#221d3a'); R(c, 40, 19, 2, 4, '#221d3a');
+    for (let dy = -5; dy <= 5; dy++) { const hw = Math.round(30 * Math.sqrt(1 - (dy * dy) / 30.25)); R(c, 28 - hw, 83 + dy, hw * 2, 1, '#776443'); }
+    for (let dy = -3; dy <= 3; dy++) { const hw = Math.round(26 * Math.sqrt(1 - (dy * dy) / 12.25)); R(c, 28 - hw, 83 + dy, hw * 2, 1, '#2a3a8a'); }
+    R(c, 24, 82, 8, 1, '#f2e6b8');
+    for (let x = 62; x < 156; x += 7) R(c, x, 80 + ((x / 7 | 0) % 2), 3, 1, '#e8c45a');
+    banner(c, 146, 41, '#ffffff');
+  },
+
+  // L5 — Umayyad Córdoba framed by a red-and-white horseshoe arch
+  cordoba(c) {
+    bands(c, [[0, '#ee9f68'], [20, '#f4bb84'], [38, '#f7d6a6'], [50, '#fae7c4']]);
+    ridge(c, 54, 22, '#9a7f6e', 41, 4);
+    ridge(c, 56, 12, '#a98d78', 57, 3);
+    R(c, 16, 40, 20, 3, '#ecd8b0'); R(c, 12, 43, 28, 3, '#e2cb9e'); R(c, 8, 46, 36, 3, '#d8bd8c');
+    R(c, 0, 54, BW, 10, '#c8af78');
+    const mx = 72;
+    R(c, mx, 44, 80, 20, '#d9b47c');
+    for (let x = mx; x < mx + 80; x += 4) { R(c, x, 42, 3, 2, '#d9b47c'); R(c, x + 1, 41, 1, 1, '#d9b47c'); }
+    for (let x = mx + 4; x < mx + 80; x += 9) R(c, x, 46, 2, 18, '#c49d66');
+    for (let x = mx + 8; x < mx + 76; x += 9) { R(c, x, 52, 5, 8, '#6e4a2c'); dome(c, x + 2.5, 52, 3, '#6e4a2c'); }
+    R(c, mx + 6, 21, 12, 23, '#cfa36c'); R(c, mx + 6, 21, 12, 1, '#e0b97f');
+    R(c, mx + 10, 26, 4, 5, '#6e4a2c'); dome(c, mx + 12, 26, 2, '#6e4a2c');
+    R(c, mx + 10, 35, 4, 5, '#6e4a2c'); dome(c, mx + 12, 35, 2, '#6e4a2c');
+    R(c, mx + 9, 16, 6, 5, '#d6ab72');
+    R(c, mx + 11, 8, 2, 8, '#8a6a40');
+    R(c, mx + 11, 14, 2, 2, '#c9cdd3'); R(c, mx + 11, 11, 2, 2, '#c9cdd3'); R(c, mx + 11, 8, 2, 2, '#e8c45a');
+    banner(c, mx + 30, 31, '#b3261e'); banner(c, mx + 66, 31, '#b3261e');
+    water(c, 64, 9, '#4c7f8e', '#a9d1d1', 9);
+    R(c, 0, 60, 64, 10, '#c7a46d'); R(c, 0, 60, 64, 1, '#dcbb84');
+    for (let x = 4; x < 60; x += 12) { R(c, x, 65, 7, 5, '#4c7f8e'); dome(c, x + 3.5, 65, 3, '#4c7f8e'); }
+    R(c, 0, 73, BW, 17, '#a88a5a'); R(c, 0, 73, BW, 1, '#c0a06a');
+    // horseshoe-arch frame with alternating red/white voussoirs
+    const cx = 80, cy = 44, rr = 44, th = 6, sx = 1.75;
+    for (let y = 0; y < BH; y++) {
+      for (let x = 0; x < BW; x++) {
+        const dx = (x + 0.5 - cx) / sx, dy = y + 0.5 - cy, d = Math.hypot(dx, dy);
+        if (y <= cy + 10) {
+          if (d > rr) R(c, x, y, 1, 1, '#4d3529');
+          else if (d > rr - th) { const a = Math.atan2(dy, dx); const k = Math.floor((a + Math.PI) / (Math.PI / 16)); R(c, x, y, 1, 1, k % 2 ? '#a33a2a' : '#efe0c0'); }
+        } else if (x < 8 || x >= BW - 8) {
+          R(c, x, y, 1, 1, y <= cy + 13 ? '#d8c8a8' : '#8b7a68');
+        }
+      }
+    }
+  }
+};
+</script>
+
+<!-- ============================================================
+     Page rendering (handoff only, not needed in the game)
+     ============================================================ -->
+<script>
+(function () {
+  const DATA = JSON.parse(document.getElementById('game-data').textContent);
+  const itemsById = Object.fromEntries(DATA.items.map(i => [i.id, i]));
+
+  function el(tag, attrs, ...kids) {
+    const e = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => { if (k === 'class') e.className = v; else e.setAttribute(k, v); });
+    kids.flat().forEach(k => { if (k == null) return; e.append(k.nodeType ? k : document.createTextNode(k)); });
+    return e;
+  }
+  const list = arr => el('ul', {}, arr.map(t => el('li', {}, t)));
+  function spriteCanvas(name, scale) {
+    const rows = SPRITES[name];
+    const cv = document.createElement('canvas');
+    cv.width = rows[0].length; cv.height = rows.length;
+    cv.style.width = cv.width * scale + 'px'; cv.style.height = cv.height * scale + 'px';
+    cv.className = 'px';
+    drawSprite(cv.getContext('2d'), name, 0, 0);
+    return cv;
+  }
+
+  // palette swatches
+  const pal = document.getElementById('palette');
+  Object.entries(PALETTE).forEach(([k, v]) => {
+    const sw = el('i', {}); sw.style.background = v;
+    pal.append(el('span', { class: 'pal' }, sw, el('code', {}, k), v));
+  });
+
+  // sprite gallery
+  const sg = document.getElementById('sprites');
+  const walk = spriteCanvas('traveller', 7);
+  let f = 0;
+  setInterval(() => {
+    f ^= 1;
+    const ctx = walk.getContext('2d');
+    ctx.clearRect(0, 0, walk.width, walk.height);
+    drawSprite(ctx, f ? 'travellerWalk' : 'traveller', 0, 0);
+  }, 260);
+  sg.append(el('div', { class: 'card sprite-tile' }, walk, el('div', { class: 'name' }, 'traveller'), el('div', { class: 'sub' }, '12×16 · 2-frame walk (animated)')));
+  DATA.items.forEach(it => {
+    const rows = SPRITES[it.sprite];
+    sg.append(el('div', { class: 'card sprite-tile' }, spriteCanvas(it.sprite, 6),
+      el('div', { class: 'name' }, it.sprite), el('div', { class: 'sub' }, `${rows[0].length}×${rows.length} · ${it.spriteNote}`)));
+  });
+
+  // level cards
+  const lc = document.getElementById('level-cards');
+  DATA.levels.forEach((L, idx) => {
+    const cv = document.createElement('canvas');
+    cv.width = BW; cv.height = BH; cv.className = 'px';
+    BACKDROPS[L.backdrop](cv.getContext('2d'));
+    const it = itemsById[L.item];
+    const sw = el('span', { class: 'swatch' }); sw.style.background = L.banner;
+    lc.append(el('article', { class: 'level', id: 'level-' + (idx + 1) },
+      el('div', { class: 'bd' }, cv, el('span', { class: 'tag' }, `Level ${idx + 1} · BACKDROPS.${L.backdrop}`)),
+      el('div', { class: 'lv-body' },
+        el('h3', {}, L.name),
+        el('p', { class: 'meta' }, `${L.region} · ${L.power}`),
+        el('p', { class: 'meta' }, sw, ` Banner: ${L.bannerNote}`),
+        el('div', { class: 'cols' },
+          el('div', {}, el('h4', {}, 'Background cues (must show)'), list(L.landmarks)),
+          el('div', {}, el('h4', {}, 'Do not draw'), list(L.avoid))),
+        el('h4', {}, 'Mechanics & hazards'), list(L.mechanics),
+        el('div', { class: 'item-mini' }, spriteCanvas(it.sprite, 4),
+          el('div', {}, el('h4', {}, 'End-of-level item'), el('p', {}, it.title), el('p', { class: 'meta' }, 'Unlocks: ' + it.unlock))))));
+  });
+
+  // item / museum cards
+  const ic = document.getElementById('item-cards');
+  DATA.items.forEach((it, idx) => {
+    const link = el('a', { href: it.url, target: '_blank', rel: 'noopener' }, 'Met object page');
+    ic.append(el('div', { class: 'card museum-card' }, spriteCanvas(it.sprite, 8),
+      el('div', {},
+        el('div', { class: 't' }, `${idx + 1}. ${it.title}`),
+        el('p', { class: 'meta' }, `${it.date} · ${it.place}`),
+        el('p', { class: 'meta' }, `Accession ${it.accession} · ${it.where} · `, link),
+        list(it.facts),
+        el('span', { class: 'unlock' }, 'Unlock: ' + it.unlock))));
+  });
+
+  // copy kickoff prompt
+  document.getElementById('copyBtn').addEventListener('click', async e => {
+    const t = document.getElementById('kickoffText').textContent;
+    try { await navigator.clipboard.writeText(t); e.target.textContent = 'Copied'; }
+    catch (err) { e.target.textContent = 'Select & copy manually'; }
+    setTimeout(() => { e.target.textContent = 'Copy prompt'; }, 1800);
+  });
+})();
+</script>
+<noscript><p style="padding:16px">The sprite previews and level cards need JavaScript. The raw data is still in this file's &lt;script&gt; blocks.</p></noscript>
+</body>
+</html>

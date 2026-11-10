@@ -1,0 +1,6 @@
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+body{color:#f3ead2;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#game{display:block;image-rendering:crisp-edges;image-rendering:pixelated;background:#000}
+.noscript{position:fixed;inset:0;margin:auto;height:2em;text-align:center}
