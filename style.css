@@ -43,3 +43,11 @@ body{color:#f3ead2;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-we
 .credits a{color:#e8c45a}
 .credits-small{color:#cbbd98}
 .credits-hint{margin-top:8px;color:#b3a991;text-align:right}
+
+/* ---- touch buttons (only added on coarse-pointer devices) ---- */
+.touch{position:absolute;inset:0;pointer-events:none}
+.tbtn{position:absolute;pointer-events:auto;width:26px;height:22px;border:1px solid rgba(243,234,210,.45);border-radius:3px;
+  background:rgba(20,16,24,.35);color:#f3ead2;font:700 9px/1 system-ui,sans-serif;padding:0;touch-action:none;-webkit-tap-highlight-color:transparent}
+.tbtn:active{background:rgba(232,196,90,.4)}
+.tl{left:6px;bottom:8px}.tr{left:36px;bottom:8px}
+.ba{right:36px;bottom:8px}.bj{right:6px;bottom:14px}.bp{right:6px;top:18px;width:18px;height:14px;font-size:7px}

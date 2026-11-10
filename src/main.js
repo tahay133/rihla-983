@@ -11,6 +11,8 @@ import { createTitleScene, createPauseScene } from './ui/title.js';
 import { createMapScene } from './ui/map.js';
 import { createVitrineScene } from './ui/vitrine.js';
 import { createCreditsScene } from './ui/credits.js';
+import { addTouchControls } from './ui/touch.js';
+import { createAudio } from './engine/audio.js';
 import data from './data/gameData.js';
 import testRoom from './levels/test.js';
 import level1 from './levels/level1.js';
@@ -26,8 +28,23 @@ const ctx = screen.ctx;
 const ui = document.getElementById('ui');
 
 const game = { screen, input, debug: false, scene: null, save: loadSave(), sfx: null };
+
+// Sound: nothing is created until the first key press, click or touch.
+const audio = createAudio();
+game.sfx = name => audio.sfx(name);
+game.muted = !!game.save.muted;
+audio.setMuted(game.muted);
+input.onFirstInput(() => audio.unlock());
+game.toggleMute = () => {
+  game.muted = !game.muted;
+  audio.setMuted(game.muted);
+  game.save.muted = game.muted;
+  writeSave(game.save);
+};
+game.audio = audio;
+addTouchControls(ui, input);
 const itemById = id => data.items.find(it => it.id === id);
-const persist = () => writeSave(game.save);
+const persist = () => { game.save.muted = !!game.muted; return writeSave(game.save); };
 
 // ---------- scenes ----------
 function goTitle() {
@@ -44,11 +61,13 @@ function goTitle() {
   items.push({ label: 'Credits', act: () => goCredits(goTitle) });
   const saved = (() => { try { localStorage.setItem('rihla983.probe', '1'); localStorage.removeItem('rihla983.probe'); return true; } catch (e) { return false; } })();
   game.scene = createTitleScene(game, { items, note: saved ? '' : 'Saving is off in this browser (storage blocked); progress lasts until you close the tab.' });
+  audio.music('title');
 }
 
 function goMap(selected) {
   game.save.inLevel = null; game.save.checkpoint = null; persist();
   game.scene = createMapScene(game, { data, save: game.save, selected, onTravel: i => goLevel(i), onBack: goTitle });
+  audio.music('map');
 }
 
 function goLevel(i, { resume = false } = {}) {
@@ -69,6 +88,7 @@ function goLevel(i, { resume = false } = {}) {
   });
   game.levelIndex = i;
   game.scene = withPause(level, i);
+  audio.music(LEVELS[i].music);
 }
 
 // Esc in a level opens the pause menu.
@@ -126,6 +146,7 @@ function goVitrine() {
     onDone: () => goCredits(goTitle),
   });
   game.scene = v;
+  audio.music('vitrine');
 }
 
 function goCredits(back) {
