@@ -62,11 +62,11 @@ const CITY = {
     mid(c) {
       const wall = '#6e4656', lit = '#80525e', dk = '#4a2f3e';
       // citadel: sloping mud-brick walls with round towers
-      for (let i = 0; i < 10; i++) R(c, 10 + i, 118 + i * 2, 190 - i * 2, 2, wall);
-      R(c, 20, 138, 170, 42, wall); crenel(c, 20, 118, 170, wall); R(c, 20, 116, 170, 2, wall);
-      for (let x = 24; x < 196; x += 34) { R(c, x - 5, 104, 11, 76, lit); dome(c, x + 0.5, 104, 5, lit); R(c, x - 1, 116, 2, 4, dk); }
-      R(c, 96, 146, 12, 34, dk); dome(c, 102, 146, 6, dk);
-      banner(c, 98, 92, '#141018');
+      for (let i = 0; i < 10; i++) R(c, 10 + i, 128 + i * 2, 190 - i * 2, 2, wall);
+      R(c, 20, 146, 170, 34, wall); crenel(c, 20, 128, 170, wall); R(c, 20, 126, 170, 2, wall);
+      for (let x = 24; x < 196; x += 44) { R(c, x - 5, 118, 11, 62, lit); dome(c, x + 0.5, 118, 5, lit); R(c, x - 1, 128, 2, 4, dk); }
+      R(c, 96, 148, 12, 32, dk); dome(c, 102, 148, 6, dk);
+      banner(c, 112, 102, '#141018');
       // houses
       const r = rng(41);
       for (let x = 222; x < 410; x += 18 + Math.floor(r() * 8)) house(c, x, 158, 16 + Math.floor(r() * 6), 14 + Math.floor(r() * 14), r() > 0.5 ? wall : lit, dk, '#a86a52', { parapet: dk });
