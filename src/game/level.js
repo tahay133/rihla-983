@@ -9,7 +9,8 @@ import { createScorpion, updateScorpion, drawScorpion, createGust, updateGust, g
 import { createItem, updateItem, drawItem, itemHitbox, createSign, drawSign } from './items.js';
 import { createTileset } from '../art/tiles.js';
 import { buildParallax, drawParallax } from '../art/layers.js';
-import { drawHearts, drawBox } from '../ui/hud.js';
+import { drawHearts, drawBox, drawInventory } from '../ui/hud.js';
+import { getSprite } from '../art/sprites.js';
 import { wrapText } from '../art/font.js';
 
 const PLATFORM_KIND = { C: 'camel', G: 'guffa', F: 'felucca' };
@@ -67,6 +68,17 @@ export function createLevel(game, def, opts = {}) {
     if (L.toast && --L.toast.t <= 0) L.toast = null;
     if (L.intro && ++L.intro.t > L.intro.len) L.intro = null;
     if (L.done) return;
+    if (L.pickup) {
+      const pk = L.pickup;
+      pk.t++;
+      pk.burst.forEach(b => { b.r += Math.max(0.3, 2.4 - pk.t * 0.06); });
+      if (pk.t === 45) {
+        L.done = true;
+        if (opts.onItem) opts.onItem(pk.it.item, L);
+        else L.say(['Found: ' + pk.it.item.title], 600);
+      }
+      return;
+    }
 
     // fainting / respawn fade
     if (L.fade) {
@@ -110,11 +122,11 @@ export function createLevel(game, def, opts = {}) {
     for (const it of L.items) {
       updateItem(it);
       if (!it.taken && overlap(player, itemHitbox(it))) {
+        // freeze, chime, sparkle burst; the museum card follows (see L.update's pickup branch)
         it.taken = true;
-        L.done = true;
         player.frozen = true;
-        if (opts.onItem) opts.onItem(it.item, L);
-        else L.say(['Found: ' + it.item.title], 600);
+        L.pickup = { t: 0, it, burst: Array.from({ length: 28 }, (_, i) => ({ a: (i / 28) * Math.PI * 2, r: 0 })) };
+        L.sfx('pickup');
       }
     }
 
@@ -181,9 +193,21 @@ export function createLevel(game, def, opts = {}) {
     for (const p of L.plats) drawPlatform(ctx, p, cx, cy);
     for (const h of L.hazards) if (h.kind === 'scorpion') drawScorpion(ctx, h, cx, cy);
     drawPlayer(ctx, player, cx, cy);
+    if (L.pickup) {
+      const it = L.pickup.it, ox = it.x + it.w / 2 - cx, oy = it.y + it.h / 2 - cy;
+      const lift = Math.min(18, L.pickup.t * 0.8);
+      ctx.fillStyle = 'rgba(232,196,90,0.25)';
+      ctx.fillRect(Math.round(ox - it.w / 2 - 4), Math.round(oy - it.h / 2 - lift - 4), it.w + 8, it.h + 8);
+      ctx.drawImage(getSprite(it.sprite).img, Math.round(ox - it.w / 2), Math.round(oy - it.h / 2 - lift));
+      for (const b of L.pickup.burst) {
+        ctx.fillStyle = L.pickup.t % 6 < 3 ? '#fff6c8' : '#e8c45a';
+        ctx.fillRect(Math.round(ox + Math.cos(b.a) * b.r), Math.round(oy - lift + Math.sin(b.a) * b.r), 1, 1);
+      }
+    }
     tiles.drawWater(ctx, world, cx, cy, L.t);
     for (const g of L.gusts) drawGust(ctx, g, cx, cy);
     drawHearts(ctx, player);
+    if (opts.inventory) drawInventory(ctx, opts.inventory);
     if (L.signText) {
       const lines = wrapText(L.signText, 230);
       drawBox(ctx, lines, W / 2, 18, { bg: 'rgba(233,215,168,0.95)', border: '#6b4a2b', color: '#2a1f18' });

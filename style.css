@@ -8,3 +8,24 @@ body{color:#f3ead2;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-we
 #ui{position:absolute;left:0;top:0;width:320px;height:180px;transform-origin:0 0;transform:scale(var(--k,1));pointer-events:none}
 #ui > *{pointer-events:auto}
 .noscript{position:fixed;inset:0;margin:auto;height:2em;text-align:center}
+
+/* ---- museum card (game-pixel units; #ui is scaled to the canvas) ---- */
+.px{image-rendering:crisp-edges;image-rendering:pixelated}
+.card{position:absolute;inset:5px;display:grid;grid-template-columns:100px 1fr;grid-template-rows:auto 1fr auto;gap:4px 7px;
+  padding:5px 6px;background:#1d1a24;border:2px solid #c9962b;box-shadow:0 0 0 1px #000,0 6px 0 rgba(0,0,0,.4);
+  color:#f3ead2;font:8px/1.15 system-ui,-apple-system,"Segoe UI",sans-serif;outline:none;
+  transform:translateY(110%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.card.in{transform:none}
+.card-art{grid-row:1;grid-column:1;display:flex;align-items:center;justify-content:center;background:#20202c;border:2px solid #c9962b;width:100px;height:100px}
+.card-text{grid-row:1/span 3;grid-column:2;overflow-y:auto;padding-bottom:2px;overflow-x:hidden;min-height:0;scrollbar-width:thin;scrollbar-color:#8f6420 transparent;outline:none}
+.card-kicker{color:#e8c45a;font-weight:700;font-size:8px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card h2{margin:0 0 2px;font-size:9px;line-height:1.1;font-weight:700;color:#fff}
+.card-meta{margin:0 0 1px;color:#cbbd98}
+.card a{color:#e8c45a;text-decoration:underline;text-underline-offset:1px}
+.card a:focus-visible{outline:1px solid #e8c45a;outline-offset:1px}
+.card-facts{margin:3px 0 0;padding-left:8px}
+.card-facts li{margin:0 0 2px}
+.card-own{margin:4px 0 0;white-space:pre-line}
+.card-unlock{grid-row:2/span 2;grid-column:1;align-self:start;background:#1f2a6b;color:#f3ead2;padding:3px 4px;border-radius:1px}
+.card-unlock b{color:#e8c45a}
+.card-hint{position:absolute;right:8px;bottom:-6px;padding:0 3px;background:#1d1a24;color:#e8c45a;cursor:pointer;line-height:10px}

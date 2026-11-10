@@ -35,7 +35,9 @@ export function createInput(target = window) {
   }
 
   target.addEventListener('keydown', e => {
-    const acts = KEYMAP[e.code];
+    // Let focused links/buttons in DOM overlays (museum card, credits) handle their own keys.
+    const ui = e.target && e.target.closest && e.target.closest('a,button,input,textarea,select');
+    const acts = ui && (e.code === 'Enter' || e.code === 'Space' || e.code === 'NumpadEnter') ? null : KEYMAP[e.code];
     if (acts) {
       if (!e.metaKey && !e.ctrlKey && !e.altKey) e.preventDefault();
       if (!e.repeat) acts.forEach(a => latched.add(a));

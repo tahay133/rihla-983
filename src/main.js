@@ -7,6 +7,8 @@ import { createLevel } from './game/level.js';
 import testRoom from './levels/test.js';
 import level1 from './levels/level1.js';
 import data from './data/gameData.js';
+import { loadSave, writeSave, collect, maxHeartsFor } from './game/save.js';
+import { openCard } from './ui/card.js';
 
 const screen = createScreen(document.getElementById('game'), document.getElementById('screen'));
 const input = createInput(window);
@@ -15,13 +17,53 @@ const ctx = screen.ctx;
 const game = { screen, input, debug: false, scene: null, debugLines: [] };
 
 const LEVELS = [level1];
+const ui = document.getElementById('ui');
+game.save = loadSave();
+const itemById = id => data.items.find(it => it.id === id);
 
 game.startLevel = (i, extra = {}) => {
   const info = data.levels[i];
-  const item = data.items.find(it => it.id === info.item);
+  const item = itemById(info.item);
+  const sv = game.save;
   game.levelIndex = i;
-  game.scene = createLevel(game, LEVELS[i], { info, item, ...extra });
+  game.scene = createLevel(game, LEVELS[i], {
+    info, item,
+    flags: { ...sv.unlocks },
+    maxHearts: maxHeartsFor(sv),
+    inventory: sv.items.map(id => itemById(id).sprite),
+    onItem: (it, level) => openMuseumCard(level, it, i),
+    ...extra,
+  });
 };
+
+// Object picked up: record it, then slide in the museum card over the frozen level.
+function openMuseumCard(level, item, i) {
+  collect(game.save, item.id, i);
+  writeSave(game.save);
+  game.sfx && game.sfx('card');
+  let closedAt = -1, t = 0;
+  const card = openCard(ui, item, {
+    levelLabel: `Level ${i + 1} · ${data.levels[i].name}`,
+    onClose: () => { closedAt = t; },
+  });
+  game.scene = {
+    update(g) {
+      t++;
+      card.update(g);
+      if (closedAt >= 0 && t - closedAt > 16) afterCard(i);
+    },
+    render(c) {
+      level.render(c);
+      c.fillStyle = 'rgba(10,8,16,0.6)';
+      c.fillRect(0, 0, 320, 180);
+    },
+  };
+}
+
+// Until the route map exists: go straight on to the next level.
+function afterCard(i) {
+  game.startLevel(LEVELS[i + 1] ? i + 1 : 0);
+}
 
 // Dev shortcuts while the F3 overlay is on: 1–5 jump to a level, T opens the engine test room.
 const devKeys = [];

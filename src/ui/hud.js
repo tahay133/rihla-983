@@ -1,5 +1,5 @@
 // Heads-up display: hearts, unlock icons, level name banner, toasts.
-import { blit } from '../art/sprites.js';
+import { blit, SPRITES, miniRows } from '../art/sprites.js';
 import { drawText, measureText } from '../art/font.js';
 
 export function drawHearts(ctx, p) {
@@ -18,4 +18,16 @@ export function drawBox(ctx, lines, cx, y, opt = {}) {
   ctx.fillRect(x, y, w, 1); ctx.fillRect(x, y + h - 1, w, 1); ctx.fillRect(x, y, 1, h); ctx.fillRect(x + w - 1, y, 1, h);
   lines.forEach((l, i) => drawText(ctx, l, cx, y + pad + i * 9, { align: 'center', color: i === 0 ? opt.color || '#f3ead2' : opt.color2 || opt.color || '#f3ead2' }));
   return { x, y, w, h };
+}
+
+// Collected objects as half-size icons, top right.
+export function drawInventory(ctx, spriteNames) {
+  let x = 316;
+  for (let i = spriteNames.length - 1; i >= 0; i--) {
+    const mini = spriteNames[i] + 'Mini';
+    if (!SPRITES[mini]) SPRITES[mini] = miniRows(spriteNames[i]);
+    const w = SPRITES[mini][0].length;
+    x -= w + 2;
+    blit(ctx, mini, x, 4);
+  }
 }
