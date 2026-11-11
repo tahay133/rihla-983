@@ -15,3 +15,6 @@ Thumbs.db
 *.pem
 notes/
 private/
+
+# Build output (node tools/build-itch.mjs)
+dist/

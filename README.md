@@ -99,6 +99,14 @@ python3 -m http.server 8983
 
 Then open <http://localhost:8983>.
 
+## Single-file build (itch.io)
+
+```bash
+node tools/build-itch.mjs
+```
+
+This inlines all the JavaScript and CSS into `dist/rihla-983-itch.html` (also written as `dist/index.html`). Upload it to itch.io as an HTML project played in the browser, or open it directly to play offline. It needs no dependencies, and `dist/` is not committed.
+
 ## Project layout
 
 ```
