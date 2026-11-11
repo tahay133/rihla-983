@@ -19,7 +19,7 @@ Made for MEIS-UA 640 / HIST-UA 542 (Fall 2026). The design handoff is in [`docs/
 | Mute | M | Back |
 | Debug overlay | F3 | |
 
-On touch screens, on-screen buttons appear.
+**On a phone, play it sideways.** Held upright, the game pauses and asks you to turn the phone (there's a "Play upright anyway" option). In landscape, buttons appear at the screen edges: ◀ ▶ ▼ on the left, X and Z on the right, and II (pause) at the top right. On browsers that allow it (Android Chrome), ⛶ goes fullscreen and locks landscape. In menus, ◀ ▶ choose and Z confirms. Add `?touch=1` to the URL to show the buttons on a desktop.
 
 You start with 3 hearts. A hazard costs one heart and knocks you back; falling into a pit costs one and returns you to the last checkpoint. With no hearts left, the traveller rests and sets out again from the checkpoint. Nobody dies permanently.
 

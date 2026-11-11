@@ -39,7 +39,7 @@ export function openCard(root, item, { levelLabel, onClose } = {}) {
     el('div', { class: 'card-art' }, spriteCanvas(item.sprite, 6)),
     text,
     el('div', { class: 'card-unlock' }, el('b', {}, 'Unlocked: '), item.unlock),
-    el('div', { class: 'card-hint' }, 'Enter ↵ continue'));
+    el('div', { class: 'card-hint' }, matchMedia('(pointer: coarse)').matches ? 'Z / tap here to continue' : 'Enter ↵ continue'));
   root.append(card);
   requestAnimationFrame(() => card.classList.add('in'));
   card.focus({ preventScroll: true });
@@ -61,7 +61,7 @@ export function openCard(root, item, { levelLabel, onClose } = {}) {
       const inp = game.input;
       if (inp.held.down) text.scrollTop += 2;
       if (inp.held.up) text.scrollTop -= 2;
-      if (t > 30 && (inp.pressed.confirm || inp.pressed.pause)) close();
+      if (t > 30 && (inp.pressed.confirm || inp.pressed.pause || inp.pressed.jump)) close();
       return closing;
     },
     close,

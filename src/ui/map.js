@@ -155,7 +155,7 @@ export function createMapScene(game, { data, save, selected, onTravel, onBack })
       const info = data.levels[sel];
       drawText(c, `Level ${sel + 1} · ${info.name}`, 6, MH + 6, { color: '#e8c45a' });
       wrapText(info.power, 308).slice(0, 2).forEach((l, i) => drawText(c, l, 6, MH + 16 + i * 9, { color: '#f3ead2' }));
-      drawText(c, '← → choose · Enter travel · Esc title', 314, MH + 36, { align: 'right', color: '#b3a991' });
+      drawText(c, game.touch ? '◀ ▶ choose · Z travel · II title' : '← → choose · Enter travel · Esc title', 314, MH + 36, { align: 'right', color: '#b3a991' });
     },
   };
 }

@@ -20,12 +20,13 @@ export function createTitleScene(game, { items, note }) {
       t++;
       const inp = g.input;
       if (confirming) {
-        if (inp.pressed.confirm) { const c = confirming; confirming = null; c.act(); }
-        else if (inp.pressed.pause || inp.pressed.left || inp.pressed.right) confirming = null;
+        if (inp.pressed.confirm || inp.pressed.jump) { const c = confirming; confirming = null; c.act(); }
+        else if (inp.pressed.pause) confirming = null;
         return;
       }
-      if (inp.pressed.up) { sel = (sel + items.length - 1) % items.length; game.sfx && game.sfx('tick'); }
-      if (inp.pressed.down) { sel = (sel + 1) % items.length; game.sfx && game.sfx('tick'); }
+      // ◀ ▶ move through the menu too, since the phone controls have no ▲
+      if (inp.pressed.up || inp.pressed.left) { sel = (sel + items.length - 1) % items.length; game.sfx && game.sfx('tick'); }
+      if (inp.pressed.down || inp.pressed.right) { sel = (sel + 1) % items.length; game.sfx && game.sfx('tick'); }
       if (t > 8 && (inp.pressed.confirm || (inp.pressed.jump && !inp.held.up))) {
         const it = items[sel];
         if (it.confirm) confirming = it; else it.act();
@@ -50,9 +51,9 @@ export function createTitleScene(game, { items, note }) {
         c.fillStyle = 'rgba(20,14,24,0.92)'; c.fillRect(60, 70, 200, 40);
         c.fillStyle = '#a33a2a'; c.fillRect(60, 70, 200, 1); c.fillRect(60, 109, 200, 1);
         drawText(c, confirming.confirm, 160, 80, { align: 'center', color: '#f3ead2' });
-        drawText(c, 'Enter: yes · Esc: no', 160, 94, { align: 'center', color: '#cbbd98' });
+        drawText(c, game.touch ? 'Z: yes · II: no' : 'Enter: yes · Esc: no', 160, 94, { align: 'center', color: '#cbbd98' });
       }
-      drawText(c, '← → move · Z / Space / ↑ jump · X action · Esc pause · M mute', 160, 160, { align: 'center', color: '#b3a991' });
+      drawText(c, game.touch ? '◀ ▶ choose · Z start · ▼ + Z drop · II pause' : '← → move · Z / Space / ↑ jump · X action · Esc pause · M mute', 160, 160, { align: 'center', color: '#b3a991' });
       if (note) drawText(c, note, 160, 170, { align: 'center', color: '#8ea6e8' });
     },
   };
@@ -65,10 +66,10 @@ export function createPauseScene(game, { under, items }) {
     update(g) {
       t++;
       const inp = g.input;
-      if (inp.pressed.up) sel = (sel + items.length - 1) % items.length;
-      if (inp.pressed.down) sel = (sel + 1) % items.length;
+      if (inp.pressed.up || inp.pressed.left) sel = (sel + items.length - 1) % items.length;
+      if (inp.pressed.down || inp.pressed.right) sel = (sel + 1) % items.length;
       if (t > 4 && inp.pressed.pause) items[0].act();
-      else if (t > 4 && (inp.pressed.confirm || inp.pressed.jump)) items[sel].act();
+      else if (t > 4 && (inp.pressed.confirm || (inp.pressed.jump && !inp.held.up))) items[sel].act();
     },
     render(c) {
       under.render(c);

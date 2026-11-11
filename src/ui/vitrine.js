@@ -21,7 +21,7 @@ export function createVitrineScene(game, { data, onCard, onDone }) {
       if (inp.pressed.left) sel = (sel + items.length - 1) % items.length;
       if (inp.pressed.right) sel = (sel + 1) % items.length;
       if (t > 40 && (inp.pressed.jump || inp.pressed.action)) onCard(items[sel]);
-      if (t > 40 && inp.pressed.confirm) onDone();
+      else if (t > 40 && (inp.pressed.confirm || inp.pressed.pause)) onDone();
     },
     render(c) {
       // gallery wall
@@ -53,7 +53,7 @@ export function createVitrineScene(game, { data, onCard, onDone }) {
       const tl = wrapText(cur.title, 300), title = tl[0] + (tl.length > 1 ? '...' : '');
       c.fillStyle = 'rgba(10,8,16,0.6)'; c.fillRect(0, 160, 320, 20);
       drawText(c, title, 160, 162, { align: 'center', color: '#e8c45a' });
-      drawText(c, '← → choose · Z view its card · Enter credits', 160, 172, { align: 'center', color: '#b3a991' });
+      drawText(c, game.touch ? '◀ ▶ choose · Z view its card · II credits' : '← → choose · Z view its card · Enter credits', 160, 172, { align: 'center', color: '#b3a991' });
     },
   };
 }

@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
 <title>Riḥla 983</title>
 <meta name="description" content="A pixel-art platformer: a traveller crosses the Islamic world in 983 CE, from Bukhara to Córdoba.">
 <link rel="stylesheet" href="style.css">
@@ -14,6 +18,12 @@
     <div id="ui"></div>
   </div>
 </main>
+<div id="rotate" role="dialog" aria-modal="true" aria-labelledby="rotate-title">
+  <div class="rot-phone" aria-hidden="true"></div>
+  <h1 id="rotate-title">Riḥla 983</h1>
+  <p>Turn your phone sideways to play.</p>
+  <button type="button" id="rotate-skip">Play upright anyway</button>
+</div>
 <noscript><p class="noscript">Riḥla 983 needs JavaScript to run.</p></noscript>
 <script type="module" src="src/main.js"></script>
 </body>

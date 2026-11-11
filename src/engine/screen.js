@@ -24,6 +24,8 @@ export function createScreen(canvas, wrap) {
   }
 
   window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', () => setTimeout(fit, 120));
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
   // devicePixelRatio changes (browser zoom, moving between monitors) don't always fire resize.
   let mq = null;
   function watchDpr() {

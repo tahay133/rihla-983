@@ -11,7 +11,7 @@ import { createTitleScene, createPauseScene } from './ui/title.js';
 import { createMapScene } from './ui/map.js';
 import { createVitrineScene } from './ui/vitrine.js';
 import { createCreditsScene } from './ui/credits.js';
-import { addTouchControls } from './ui/touch.js';
+import { addTouchControls, isTouch, rotatePrompting } from './ui/touch.js';
 import { createAudio } from './engine/audio.js';
 import data from './data/gameData.js';
 import testRoom from './levels/test.js';
@@ -42,7 +42,8 @@ game.toggleMute = () => {
   writeSave(game.save);
 };
 game.audio = audio;
-addTouchControls(ui, input);
+game.touch = isTouch;
+addTouchControls(input);
 const itemById = id => data.items.find(it => it.id === id);
 const persist = () => { game.save.muted = !!game.muted; return writeSave(game.save); };
 
@@ -174,6 +175,7 @@ function runDevKeys() {
 function update() {
   if (game.hold && !game.stepping) return; // dev: frozen except for __rihla.step()
   input.update();
+  if (rotatePrompting()) return;           // upright phone: paused behind the "turn sideways" screen
   if (input.pressed.debug) game.debug = !game.debug;
   if (input.pressed.mute && game.toggleMute) game.toggleMute();
   runDevKeys();
